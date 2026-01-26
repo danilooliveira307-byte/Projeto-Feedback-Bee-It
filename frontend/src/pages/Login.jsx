@@ -204,61 +204,6 @@ const Login = () => {
                 )}
               </Button>
             </form>
-
-            {/* Demo Section */}
-            <div className="mt-8 pt-6 border-t border-slate-700/50">
-              <div className="text-center mb-4">
-                <p className="text-sm text-slate-400">
-                  Primeiro acesso? Crie dados de demonstração:
-                </p>
-              </div>
-              
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleSeedData}
-                disabled={seeding}
-                className="w-full h-11 bg-slate-800/50 hover:bg-slate-700/50 border-slate-700 text-slate-300 hover:text-white rounded-xl transition-all duration-200"
-                data-testid="seed-data-btn"
-              >
-                {seeding ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Criando...
-                  </>
-                ) : (
-                  <>
-                    <Database className="mr-2 h-4 w-4" />
-                    Criar Dados de Demonstração
-                  </>
-                )}
-              </Button>
-
-              {seedMessage && (
-                <p className={`mt-3 text-sm text-center ${seedMessage.includes('Erro') ? 'text-red-400' : 'text-emerald-400'}`}>
-                  {seedMessage}
-                </p>
-              )}
-
-              {/* Demo credentials */}
-              <div className="mt-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
-                <p className="text-xs text-slate-400 font-medium mb-3 uppercase tracking-wider">Credenciais de Demonstração</p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-slate-300">
-                    <span className="text-slate-500">Admin:</span>
-                    <span className="font-mono">admin@beeit.com.br / admin123</span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span className="text-slate-500">Gestor:</span>
-                    <span className="font-mono">gestor@beeit.com.br / gestor123</span>
-                  </div>
-                  <div className="flex justify-between text-slate-300">
-                    <span className="text-slate-500">Colab:</span>
-                    <span className="font-mono">colaborador@beeit.com.br / colab123</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
