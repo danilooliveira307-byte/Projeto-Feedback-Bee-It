@@ -1131,9 +1131,13 @@ async def get_collaborator_profile(colaborador_id: str, user: dict = Depends(get
         {"colaborador_id": colaborador_id}, {"_id": 0}
     ).sort("data_feedback", -1).to_list(100)
     
-    for feedback in feedbacks:
-        gestor_fb = await db.usuarios.find_one({"id": feedback["gestor_id"]}, {"_id": 0, "nome": 1})
-        feedback["gestor_nome"] = gestor_fb.get("nome") if gestor_fb else None
+    # Batch fetch gestor names
+    if feedbacks:
+        gestor_ids = list(set(f["gestor_id"] for f in feedbacks))
+        gestores = await db.usuarios.find({"id": {"$in": gestor_ids}}, {"_id": 0, "id": 1, "nome": 1}).to_list(len(gestor_ids))
+        gestor_map = {g["id"]: g.get("nome") for g in gestores}
+        for feedback in feedbacks:
+            feedback["gestor_nome"] = gestor_map.get(feedback["gestor_id"])
     
     # Aggregate recurring strengths and improvements
     pontos_fortes = {}
