@@ -68,17 +68,27 @@ const Users = () => {
   const { user: currentUser } = useAuth();
   
   const [users, setUsers] = useState([]);
+  const { toast } = useToast();
   const [teams, setTeams] = useState([]);
+  const { toast } = useToast();
   const [gestores, setGestores] = useState([]);
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
+  const { toast } = useToast();
   
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [editingUser, setEditingUser] = useState(null);
+  const { toast } = useToast();
   const [userToDelete, setUserToDelete] = useState(null);
+  const { toast } = useToast();
   
   const [formData, setFormData] = useState({
+  const { toast } = useToast();
     nome: '',
     email: '',
     password: '',

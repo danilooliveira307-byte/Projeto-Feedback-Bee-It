@@ -50,15 +50,21 @@ const ActionPlans = () => {
   const { isGestorOrAdmin } = useAuth();
   
   const [plans, setPlans] = useState([]);
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [planToDelete, setPlanToDelete] = useState(null);
+  const { toast } = useToast();
   
   const [filters, setFilters] = useState({
+  const { toast } = useToast();
     status: searchParams.get('status') || '',
     responsavel: ''
   });
   const [showFilters, setShowFilters] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchPlans();

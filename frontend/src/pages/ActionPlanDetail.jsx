@@ -56,13 +56,20 @@ const ActionPlanDetail = () => {
   const { user, isGestorOrAdmin } = useAuth();
   
   const [plan, setPlan] = useState(null);
+  const { toast } = useToast();
   const [items, setItems] = useState([]);
+  const { toast } = useToast();
   const [checkins, setCheckins] = useState([]);
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   
   const [newItemText, setNewItemText] = useState('');
+  const { toast } = useToast();
   const [checkinDialogOpen, setCheckinDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [newCheckin, setNewCheckin] = useState({
+  const { toast } = useToast();
     progresso: 'Regular',
     comentario: ''
   });

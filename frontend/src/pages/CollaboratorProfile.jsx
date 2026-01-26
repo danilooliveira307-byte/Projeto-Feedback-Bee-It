@@ -28,7 +28,9 @@ const CollaboratorProfile = () => {
   const { user } = useAuth();
   
   const [profile, setProfile] = useState(null);
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchProfile();

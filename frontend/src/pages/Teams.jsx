@@ -52,14 +52,21 @@ const Teams = () => {
   const { isAdmin } = useAuth();
   
   const [teams, setTeams] = useState([]);
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [editingTeam, setEditingTeam] = useState(null);
+  const { toast } = useToast();
   const [teamToDelete, setTeamToDelete] = useState(null);
+  const { toast } = useToast();
   
   const [formData, setFormData] = useState({
+  const { toast } = useToast();
     nome: '',
     empresa: 'Bee It',
     frequencia_padrao_feedback_dias: 30,

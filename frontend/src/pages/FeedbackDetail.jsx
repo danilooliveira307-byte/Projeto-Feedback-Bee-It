@@ -54,11 +54,17 @@ const FeedbackDetail = () => {
   const { user, isColaborador, isGestorOrAdmin } = useAuth();
   
   const [feedback, setFeedback] = useState(null);
+  const { toast } = useToast();
   const [actionPlans, setActionPlans] = useState([]);
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const [acknowledging, setAcknowledging] = useState(false);
+  const { toast } = useToast();
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
+  const { toast } = useToast();
   const [newPlan, setNewPlan] = useState({
+  const { toast } = useToast();
     objetivo: '',
     prazo_final: null,
     responsavel: 'Colaborador'

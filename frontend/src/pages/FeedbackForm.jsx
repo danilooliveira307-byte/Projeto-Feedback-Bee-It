@@ -47,11 +47,16 @@ const FeedbackForm = () => {
   const isEditing = !!id;
 
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
   const [users, setUsers] = useState([]);
+  const { toast } = useToast();
   const [teams, setTeams] = useState([]);
+  const { toast } = useToast();
   
   const [formData, setFormData] = useState({
+  const { toast } = useToast();
     colaborador_id: '',
     tipo_feedback: '',
     contexto: '',
@@ -64,9 +69,13 @@ const FeedbackForm = () => {
   });
 
   const [newPontoForte, setNewPontoForte] = useState('');
+  const { toast } = useToast();
   const [newPontoMelhoria, setNewPontoMelhoria] = useState('');
+  const { toast } = useToast();
   const [createPlan, setCreatePlan] = useState(false);
+  const { toast } = useToast();
   const [planData, setPlanData] = useState({
+  const { toast } = useToast();
     objetivo: '',
     prazo_final: null,
     responsavel: 'Colaborador'
