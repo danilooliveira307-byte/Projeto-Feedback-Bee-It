@@ -585,12 +585,19 @@ async def list_feedbacks(
         else:
             feedbacks = [f for f in feedbacks if f["id"] not in feedback_ids_with_plan]
     
-    # Enrich with user names
-    for feedback in feedbacks:
-        colab = await db.usuarios.find_one({"id": feedback["colaborador_id"]}, {"_id": 0, "nome": 1})
-        gestor = await db.usuarios.find_one({"id": feedback["gestor_id"]}, {"_id": 0, "nome": 1})
-        feedback["colaborador_nome"] = colab.get("nome") if colab else None
-        feedback["gestor_nome"] = gestor.get("nome") if gestor else None
+    # Batch fetch user names to avoid N+1 queries
+    if feedbacks:
+        user_ids = set()
+        for f in feedbacks:
+            user_ids.add(f["colaborador_id"])
+            user_ids.add(f["gestor_id"])
+        
+        users = await db.usuarios.find({"id": {"$in": list(user_ids)}}, {"_id": 0, "id": 1, "nome": 1}).to_list(len(user_ids))
+        user_map = {u["id"]: u.get("nome") for u in users}
+        
+        for feedback in feedbacks:
+            feedback["colaborador_nome"] = user_map.get(feedback["colaborador_id"])
+            feedback["gestor_nome"] = user_map.get(feedback["gestor_id"])
     
     return [FeedbackResponse(**f) for f in feedbacks]
 
