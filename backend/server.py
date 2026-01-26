@@ -982,9 +982,13 @@ async def get_gestor_dashboard(user: dict = Depends(require_gestor_or_admin)):
         {"colaborador_id": {"$in": member_ids}}, {"_id": 0}
     ).sort("data_feedback", -1).limit(5).to_list(5)
     
-    for feedback in recent_feedbacks:
-        colab = await db.usuarios.find_one({"id": feedback["colaborador_id"]}, {"_id": 0, "nome": 1})
-        feedback["colaborador_nome"] = colab.get("nome") if colab else None
+    # Batch fetch user names
+    if recent_feedbacks:
+        user_ids = list(set(f["colaborador_id"] for f in recent_feedbacks))
+        users = await db.usuarios.find({"id": {"$in": user_ids}}, {"_id": 0, "id": 1, "nome": 1}).to_list(len(user_ids))
+        user_map = {u["id"]: u.get("nome") for u in users}
+        for feedback in recent_feedbacks:
+            feedback["colaborador_nome"] = user_map.get(feedback["colaborador_id"])
     
     return {
         "feedbacks_atrasados": feedbacks_atrasados,
