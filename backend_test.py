@@ -339,7 +339,7 @@ class BeeItFeedbackTester:
             
             success, data = self.make_request('POST', 'action-plan-items', item_data, 
                                             gestor_token, 201)
-            if success:
+            if success and 'id' in data:
                 test_item_id = data['id']
                 self.log_test("Create Action Plan Item", True)
                 
