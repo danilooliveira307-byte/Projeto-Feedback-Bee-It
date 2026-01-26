@@ -282,6 +282,7 @@ const GestorDashboard = ({ data }) => {
 const ColaboradorDashboard = ({ data, onRefresh }) => {
   const navigate = useNavigate();
   const [acknowledging, setAcknowledging] = useState(null);
+  const { toast } = useToast();
 
   const handleAcknowledge = async (feedbackId) => {
     setAcknowledging(feedbackId);
