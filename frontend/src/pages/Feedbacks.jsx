@@ -63,6 +63,7 @@ const Feedbacks = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user, isAdmin, isGestor, isColaborador, isGestorOrAdmin } = useAuth();
+  const { toast } = useToast();
   
   const [feedbacks, setFeedbacks] = useState([]);
   const [teams, setTeams] = useState([]);
