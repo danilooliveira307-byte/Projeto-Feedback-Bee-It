@@ -37,7 +37,9 @@ const Login = () => {
       toast({ title: 'Login realizado com sucesso!' });
       navigate('/dashboard');
     } catch (err) {
+      console.error('Login error:', err);
       const message = err.response?.data?.detail || 'Erro ao fazer login. Verifique suas credenciais.';
+      console.log('Setting error message:', message);
       setError(message);
       toast({ title: 'Erro', description: message, variant: 'destructive' });
     } finally {
