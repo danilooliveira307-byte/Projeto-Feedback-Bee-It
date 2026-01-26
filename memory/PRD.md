@@ -25,9 +25,20 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 - Cálculo automático de próximo feedback baseado na frequência do time
 - Progressos percentuais automáticos em planos de ação
 
-## O que foi Implementado (26/01/2026)
+## O que foi Implementado
 
-### Backend (FastAPI + MongoDB)
+### Redesenho Visual Dark Corporativo (27/01/2026)
+- ✅ Tema dark mode baseado em beeitpartner.com.br
+- ✅ Paleta de cores: Navy (#0F172A), Orange (#F59E0B), Slate tones
+- ✅ Glassmorphism cards com backdrop-blur
+- ✅ Tipografia Manrope
+- ✅ Ícone Hexágono como branding
+- ✅ Sidebar moderna com hover effects
+- ✅ Status badges coloridos (verde, azul, vermelho, amarelo)
+- ✅ Animações suaves (fade-in, slide-in, glow)
+- ✅ Design responsivo
+
+### Backend (FastAPI + MongoDB) - 26/01/2026
 - ✅ Autenticação JWT completa
 - ✅ Endpoints para todas as entidades (Usuarios, Times, Feedbacks, PlanosDeAcao, ItemPlanoDeAcao, CheckIns, Notificacoes)
 - ✅ Dashboards específicos por papel (/api/dashboard/admin, /api/dashboard/gestor, /api/dashboard/colaborador)
@@ -36,8 +47,8 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 - ✅ Cálculo automático de status de feedbacks e planos
 - ✅ Sistema de notificações
 
-### Frontend (React + Shadcn/UI)
-- ✅ Tela de Login com identidade visual Bee It (logo, cores, padrão hexagonal)
+### Frontend (React + Shadcn/UI) - 26/01/2026
+- ✅ Tela de Login split-screen com branding
 - ✅ Dashboard Admin (métricas gerais, gráfico de feedbacks por tipo)
 - ✅ Dashboard Gestor (alertas, feedbacks atrasados, vencendo, recentes)
 - ✅ Dashboard Colaborador (feedbacks recebidos, ciência, planos)
@@ -62,6 +73,7 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 - CRUD de todas as entidades
 - Dashboards por papel
 - Fluxo de feedbacks completo
+- Redesenho visual dark corporativo
 
 ### P1 (Alta Prioridade) - Próximos passos
 - [ ] Notificações por email (integração SendGrid/Resend)
@@ -74,7 +86,6 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 - [ ] Busca global
 
 ### P3 (Baixa Prioridade)
-- [ ] Modo escuro
 - [ ] Personalização de cores por empresa
 - [ ] Integração com calendário (Google Calendar)
 
@@ -84,7 +95,15 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 - **Database**: MongoDB
 - **Auth**: JWT Bearer tokens
 
+## Design System
+- **Tema**: Dark Mode Corporate
+- **Background**: #0F172A (Navy), #1E293B (Paper), #020617 (Sidebar)
+- **Primary**: #F59E0B (Orange), #D97706 (Orange Hover)
+- **Status**: Success (#10B981), Warning (#F59E0B), Error (#EF4444), Info (#3B82F6)
+- **Typography**: Manrope (primary), system fonts (fallback)
+- **Components**: Glassmorphism cards, rounded-xl borders, shadow-lg
+
 ## Próximas Ações
-1. Adicionar notificações por email para feedbacks pendentes
-2. Implementar exportação de relatórios
-3. Adicionar mais métricas no dashboard Admin
+1. Implementar notificações por email para feedbacks pendentes
+2. Adicionar exportação de relatórios em PDF
+3. Implementar filtros avançados com período de data
