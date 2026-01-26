@@ -83,12 +83,14 @@ const Login = () => {
         
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center p-12 lg:p-16">
-          <div className="flex items-center gap-4 mb-8">
-            <Hexagon className="h-14 w-14 text-[#F59E0B] fill-[#F59E0B]/20" />
-            <div>
-              <h1 className="text-3xl font-bold text-white">Bee It</h1>
-              <p className="text-[#F59E0B] font-medium">Feedback</p>
-            </div>
+          <div className="mb-8">
+            <img 
+              src={LOGO_URL} 
+              alt="Bee It" 
+              className="h-20 object-contain mb-4"
+              data-testid="login-logo"
+            />
+            <p className="text-[#F59E0B] font-medium text-lg">Feedback</p>
           </div>
           
           <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-6">
@@ -122,9 +124,12 @@ const Login = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
         <div className="w-full max-w-md">
           {/* Mobile logo */}
-          <div className="flex items-center gap-3 mb-10 lg:hidden">
-            <Hexagon className="h-10 w-10 text-[#F59E0B] fill-[#F59E0B]/20" />
-            <span className="text-2xl font-bold text-white">Bee It <span className="text-[#F59E0B]">Feedback</span></span>
+          <div className="flex items-center justify-center mb-10 lg:hidden">
+            <img 
+              src={LOGO_URL} 
+              alt="Bee It" 
+              className="h-14 object-contain"
+            />
           </div>
 
           <div className="glass-card rounded-2xl p-8 animate-fade-in">
