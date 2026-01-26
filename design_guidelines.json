@@ -1,0 +1,138 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Bee It Feedback",
+      "persona": "E1 - The Anti-AI Designer",
+      "core_philosophy": "Corporate Soul. Professional doesn't mean boring. We mix the reliability of Enterprise ERP with the warmth of a hive.",
+      "principles": [
+        "Fusion: Enterprise Data + Organic Warmth (Hexagons, Amber glows)",
+        "Dark Mode First: Deep Navy backgrounds to reduce eye strain for long-shift HR work",
+        "Content is King: Data visualization must be instant to read (Heatmaps > Tables)",
+        "Contrast: High-vis Orange actions against Deep Navy backgrounds"
+      ]
+    },
+    "typography": {
+      "font_family": {
+        "primary": "Manrope, sans-serif",
+        "code": "JetBrains Mono, monospace"
+      },
+      "scale": {
+        "h1": "text-4xl md:text-5xl font-bold tracking-tight",
+        "h2": "text-3xl font-bold tracking-tight",
+        "h3": "text-2xl font-semibold tracking-tight",
+        "body": "text-base leading-relaxed text-slate-300",
+        "small": "text-sm font-medium text-slate-400"
+      },
+      "rules": [
+        "Never use 'Inter' for headings. Use Manrope Bold/ExtraBold.",
+        "Headings are always White (#FFFFFF) or Off-White (#F8FAFC).",
+        "Body text is never pure white; use Slate-300 or Slate-400 for readability."
+      ]
+    },
+    "colors": {
+      "palette": {
+        "background": {
+          "default": "#0F172A",
+          "paper": "#1E293B",
+          "sidebar": "#020617"
+        },
+        "primary": {
+          "default": "#F59E0B",
+          "hover": "#D97706",
+          "foreground": "#FFFFFF"
+        },
+        "secondary": {
+          "default": "#334155",
+          "foreground": "#F8FAFC"
+        },
+        "accent": {
+          "default": "#F59E0B",
+          "glow": "rgba(245, 158, 11, 0.2)"
+        },
+        "status": {
+          "success": "#10B981",
+          "warning": "#F59E0B",
+          "error": "#EF4444",
+          "info": "#3B82F6"
+        }
+      },
+      "gradients": {
+        "brand": "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
+        "dark_surface": "linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.7) 100%)"
+      }
+    },
+    "layout": {
+      "grid_system": "Bento Grid (CSS Grid)",
+      "spacing": {
+        "container_padding": "p-6 md:p-8 lg:p-12",
+        "card_padding": "p-6",
+        "gap": "gap-6"
+      },
+      "border_radius": {
+        "card": "rounded-xl",
+        "button": "rounded-lg",
+        "input": "rounded-md"
+      }
+    },
+    "components": {
+      "buttons": {
+        "primary": "bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20 transition-all hover:-translate-y-0.5",
+        "secondary": "bg-slate-800 hover:bg-slate-700 text-white border border-slate-700",
+        "ghost": "hover:bg-slate-800/50 text-slate-300 hover:text-white"
+      },
+      "cards": {
+        "default": "bg-slate-900/50 backdrop-blur-md border border-slate-800/60 shadow-xl",
+        "highlight": "bg-gradient-to-br from-slate-800 to-slate-900 border border-orange-500/20 relative overflow-hidden"
+      },
+      "inputs": {
+        "default": "bg-slate-950 border-slate-800 focus:border-orange-500 focus:ring-orange-500/20 text-white placeholder:text-slate-500"
+      }
+    },
+    "visual_enhancers": {
+      "glassmorphism": "backdrop-blur-xl bg-slate-900/70 border border-white/10",
+      "shadows": {
+        "card": "0 8px 32px -4px rgba(0, 0, 0, 0.3)",
+        "glow": "0 0 20px -5px rgba(245, 158, 11, 0.3)"
+      },
+      "patterns": {
+        "hex_bg": "Use the existing .hex-pattern class for subtle background texture in the sidebar or hero sections."
+      }
+    },
+    "assets": {
+      "images": {
+        "login_hero": "https://images.unsplash.com/photo-1758691736975-9f7f643d178e?q=80&w=2000&auto=format&fit=crop",
+        "team_meeting": "https://images.unsplash.com/photo-1758873271761-6cfe9b4f000c?q=80&w=2000&auto=format&fit=crop",
+        "avatars": [
+          "https://images.unsplash.com/photo-1758518727592-706e80ebc354?q=80&w=200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1651684215020-f7a5b6610f23?q=80&w=200&auto=format&fit=crop",
+          "https://images.pexels.com/photos/3727513/pexels-photo-3727513.jpeg?auto=compress&cs=tinysrgb&w=200"
+        ]
+      },
+      "icons": "Lucide React (default). Use 'Hexagon' icon for branding moments."
+    }
+  },
+  "implementation_plan": {
+    "phase_1_setup": [
+      "Configure Tailwind colors to match the 'Bee It' Dark Palette.",
+      "Ensure 'Manrope' font is applied globally.",
+      "Create a 'Layout' component with the Sidebar (Admin/Manager/User variants)."
+    ],
+    "phase_2_components": [
+      "Customize Shadcn Button, Card, Input, and Badge to match the Dark/Orange theme.",
+      "Build the 'FeedbackCard' component with status badges (Em dia, Atrasado, etc.).",
+      "Create the 'ActionPlan' checklist component."
+    ],
+    "phase_3_pages": [
+      "Login Page: Split screen. Left: Branding/Image, Right: Form. Dark theme.",
+      "Dashboard: Bento Grid layout. Key metrics at top. Recent feedbacks list.",
+      "Collaborator Profile: Vertical Timeline component for history."
+    ]
+  },
+  "universal_guidelines": [
+    "DO NOT use gradients for text unless it's a very large hero title.",
+    "DO NOT use pure black (#000000). Use #020617 or #0F172A.",
+    "Always add 'transition-all duration-200' to interactive elements.",
+    "Use 'data-testid' for all interactive elements.",
+    "Ensure contrast ratios meet WCAG AA (Orange text on dark blue might need tweaking - use White text on Orange buttons)."
+  ]
+}
