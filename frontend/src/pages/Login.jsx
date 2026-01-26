@@ -5,8 +5,10 @@ import { seedData } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Loader2, Mail, Lock, AlertCircle, Hexagon, Database, ArrowRight } from 'lucide-react';
+import { Loader2, Mail, Lock, AlertCircle, Database, ArrowRight } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+
+const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/i4773jcn_Logo%20BEE%20IT%20Original.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
