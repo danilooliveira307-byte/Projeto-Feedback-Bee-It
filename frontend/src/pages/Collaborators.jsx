@@ -13,7 +13,7 @@ import {
   MessageSquare,
   Mail
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 
 const Collaborators = () => {
   const navigate = useNavigate();

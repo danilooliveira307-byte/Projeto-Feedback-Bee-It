@@ -25,7 +25,7 @@ import {
   Plus,
   Eye
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

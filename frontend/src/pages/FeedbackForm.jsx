@@ -34,7 +34,7 @@ import {
   Loader2,
   ClipboardList
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 import { format, addDays, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

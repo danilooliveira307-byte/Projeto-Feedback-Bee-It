@@ -46,7 +46,7 @@ import {
   Building2,
   Calendar
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 
 const Teams = () => {
   const { isAdmin } = useAuth();

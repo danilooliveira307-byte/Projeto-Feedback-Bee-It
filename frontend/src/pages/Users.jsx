@@ -55,7 +55,7 @@ import {
   Users as UsersIcon,
   Eye
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 
 const ROLES = [
   { value: 'ADMIN', label: 'Administrador' },
