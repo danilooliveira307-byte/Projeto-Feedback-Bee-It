@@ -368,7 +368,7 @@ class BeeItFeedbackTester:
             
             success, data = self.make_request('POST', 'checkins', checkin_data, 
                                             gestor_token, 201)
-            if success:
+            if success and 'id' in data:
                 self.log_test("Create Check-in", True)
                 
                 # List check-ins
