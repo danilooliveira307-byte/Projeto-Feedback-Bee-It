@@ -19,21 +19,18 @@ import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from '../components/ui/dialog';
-import {
   ArrowLeft,
   Plus,
   Trash2,
@@ -49,7 +46,6 @@ import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 const PROGRESS_OPTIONS = ['Ruim', 'Regular', 'Bom'];
-
 const ActionPlanDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -58,26 +54,17 @@ const ActionPlanDetail = () => {
   const [plan, setPlan] = useState(null);
   const { toast } = useToast();
   const [items, setItems] = useState([]);
-  const { toast } = useToast();
   const [checkins, setCheckins] = useState([]);
-  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-  
   const [newItemText, setNewItemText] = useState('');
-  const { toast } = useToast();
   const [checkinDialogOpen, setCheckinDialogOpen] = useState(false);
-  const { toast } = useToast();
   const [newCheckin, setNewCheckin] = useState({
-  const { toast } = useToast();
     progresso: 'Regular',
     comentario: ''
   });
-
   useEffect(() => {
     fetchData();
   }, [id]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -97,11 +84,9 @@ const ActionPlanDetail = () => {
       setLoading(false);
     }
   };
-
   const handleAddItem = async () => {
     if (!newItemText.trim()) return;
     
-    try {
       await createActionPlanItem({
         plano_de_acao_id: id,
         descricao: newItemText.trim()
@@ -109,51 +94,25 @@ const ActionPlanDetail = () => {
       setNewItemText('');
       fetchData();
       toast({ title: 'Item adicionado!' });
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao adicionar item', variant: 'destructive' });
-    }
-  };
-
   const handleToggleItem = async (item) => {
-    try {
       await updateActionPlanItem(item.id, { concluido: !item.concluido });
-      fetchData();
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao atualizar item', variant: 'destructive' });
-    }
-  };
-
   const handleDeleteItem = async (itemId) => {
-    try {
       await deleteActionPlanItem(itemId);
-      fetchData();
       toast({ title: 'Item removido!' });
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao remover item', variant: 'destructive' });
-    }
-  };
-
   const handleCreateCheckin = async () => {
     if (!newCheckin.comentario.trim()) {
       toast({ title: 'Erro', description: 'Adicione um comentário', variant: 'destructive' });
       return;
-    }
-
-    try {
       await createCheckin({
-        plano_de_acao_id: id,
         progresso: newCheckin.progresso,
         comentario: newCheckin.comentario
-      });
       setCheckinDialogOpen(false);
       setNewCheckin({ progresso: 'Regular', comentario: '' });
-      fetchData();
       toast({ title: 'Check-in registrado!' });
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao registrar check-in', variant: 'destructive' });
-    }
-  };
-
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Concluído':
@@ -164,9 +123,6 @@ const ActionPlanDetail = () => {
         return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
   const getProgressBadge = (progresso) => {
     switch (progresso) {
       case 'Bom':
@@ -175,29 +131,14 @@ const ActionPlanDetail = () => {
         return <Badge className="bg-yellow-100 text-yellow-700">Regular</Badge>;
       case 'Ruim':
         return <Badge className="bg-red-100 text-red-700">Ruim</Badge>;
-      default:
         return <Badge variant="secondary">{progresso}</Badge>;
-    }
-  };
-
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
-    try {
       return format(parseISO(dateStr), "dd 'de' MMMM, yyyy", { locale: ptBR });
     } catch {
       return dateStr;
-    }
-  };
-
   const formatDateTime = (dateStr) => {
-    if (!dateStr) return '-';
-    try {
       return format(parseISO(dateStr), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
-    } catch {
-      return dateStr;
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -205,11 +146,8 @@ const ActionPlanDetail = () => {
       </div>
     );
   }
-
   if (!plan) {
     return null;
-  }
-
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto" data-testid="action-plan-detail">
       {/* Header */}
@@ -231,9 +169,6 @@ const ActionPlanDetail = () => {
         >
           <MessageSquare className="h-4 w-4 mr-2" />
           Novo Check-in
-        </Button>
-      </div>
-
       {/* Objective */}
       <Card>
         <CardHeader>
@@ -249,38 +184,24 @@ const ActionPlanDetail = () => {
               <User className="h-4 w-4" />
               Responsável: {plan.responsavel}
             </span>
-            <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               Prazo: {formatDate(plan.prazo_final)}
-            </span>
-          </div>
         </CardContent>
       </Card>
-
       {/* Progress */}
-      <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="font-medium">Progresso Geral</span>
             <span className="text-2xl font-bold text-[hsl(30,94%,54%)]">
               {plan.progresso_percentual}%
-            </span>
-          </div>
           <Progress value={plan.progresso_percentual} className="h-3" />
           <p className="text-sm text-gray-500 mt-2">
             {items.filter(i => i.concluido).length} de {items.length} itens concluídos
           </p>
-        </CardContent>
-      </Card>
-
       {/* Checklist */}
-      <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
             <ClipboardCheck className="h-5 w-5" />
             Itens do Plano
-          </CardTitle>
-        </CardHeader>
         <CardContent className="space-y-4">
           {/* Add new item */}
           <div className="flex gap-2">
@@ -294,8 +215,6 @@ const ActionPlanDetail = () => {
             <Button onClick={handleAddItem} className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]">
               <Plus className="h-4 w-4" />
             </Button>
-          </div>
-
           {/* Items list */}
           <div className="space-y-2">
             {items.length === 0 ? (
@@ -332,19 +251,9 @@ const ActionPlanDetail = () => {
                 </div>
               ))
             )}
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Check-ins */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
             Histórico de Check-ins
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
           {checkins.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
@@ -368,16 +277,10 @@ const ActionPlanDetail = () => {
                     </div>
                     <span className="text-xs text-gray-500">
                       {formatDateTime(checkin.data_checkin)}
-                    </span>
                   </div>
                   <p className="text-gray-600">{checkin.comentario}</p>
-                </div>
               ))}
-            </div>
           )}
-        </CardContent>
-      </Card>
-
       {/* Check-in Dialog */}
       <Dialog open={checkinDialogOpen} onOpenChange={setCheckinDialogOpen}>
         <DialogContent>
@@ -390,7 +293,6 @@ const ActionPlanDetail = () => {
               <Select
                 value={newCheckin.progresso}
                 onValueChange={(v) => setNewCheckin(prev => ({ ...prev, progresso: v }))}
-              >
                 <SelectTrigger data-testid="checkin-progress-select">
                   <SelectValue />
                 </SelectTrigger>
@@ -400,8 +302,6 @@ const ActionPlanDetail = () => {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-2">
               <Label>Comentário</Label>
               <Textarea
                 placeholder="Descreva o progresso e observações..."
@@ -410,24 +310,19 @@ const ActionPlanDetail = () => {
                 rows={4}
                 data-testid="checkin-comment-input"
               />
-            </div>
-          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCheckinDialogOpen(false)}>
               Cancelar
-            </Button>
             <Button
               onClick={handleCreateCheckin}
               className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
               data-testid="save-checkin-btn"
             >
               Registrar Check-in
-            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
 };
-
 export default ActionPlanDetail;

@@ -30,12 +30,9 @@ const CollaboratorProfile = () => {
   const [profile, setProfile] = useState(null);
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-
   useEffect(() => {
     fetchProfile();
   }, [id]);
-
   const fetchProfile = async () => {
     setLoading(true);
     try {
@@ -49,7 +46,6 @@ const CollaboratorProfile = () => {
       setLoading(false);
     }
   };
-
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Em dia':
@@ -60,31 +56,17 @@ const CollaboratorProfile = () => {
         return <Badge className="status-atrasado">Atrasado</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
   const getPlanStatusBadge = (status) => {
-    switch (status) {
       case 'Concluído':
         return <Badge className="bg-green-100 text-green-700">Concluído</Badge>;
       case 'Em andamento':
         return <Badge className="bg-blue-100 text-blue-700">Em andamento</Badge>;
-      case 'Atrasado':
         return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
-    try {
       return format(parseISO(dateStr), "dd 'de' MMMM, yyyy", { locale: ptBR });
     } catch {
       return dateStr;
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -92,13 +74,9 @@ const CollaboratorProfile = () => {
       </div>
     );
   }
-
   if (!profile) {
     return null;
-  }
-
   const { colaborador, time, gestor, feedbacks, pontos_fortes_recorrentes, pontos_melhoria_recorrentes, planos_acao, proximo_feedback, total_feedbacks } = profile;
-
   return (
     <div className="space-y-6 animate-fade-in" data-testid="collaborator-profile">
       {/* Header */}
@@ -110,8 +88,6 @@ const CollaboratorProfile = () => {
           <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Perfil do Colaborador</h1>
           <p className="text-gray-500">Histórico e desenvolvimento</p>
         </div>
-      </div>
-
       {/* Profile Card */}
       <Card>
         <CardContent className="p-6">
@@ -133,21 +109,15 @@ const CollaboratorProfile = () => {
                   </span>
                 )}
                 {gestor && (
-                  <span className="flex items-center gap-1">
                     <User className="h-4 w-4" />
                     Gestor: {gestor.nome}
-                  </span>
-                )}
               </div>
-            </div>
             <div className="text-right">
               <p className="text-3xl font-bold text-[hsl(30,94%,54%)]">{total_feedbacks}</p>
               <p className="text-sm text-gray-500">feedbacks recebidos</p>
-            </div>
           </div>
         </CardContent>
       </Card>
-
       {/* Next Feedback */}
       {proximo_feedback && (
         <Card className="border-l-4 border-l-[hsl(30,94%,54%)]">
@@ -156,11 +126,9 @@ const CollaboratorProfile = () => {
             <div>
               <p className="text-sm text-gray-500">Próximo Feedback</p>
               <p className="font-semibold text-[hsl(210,54%,23%)]">{formatDate(proximo_feedback)}</p>
-            </div>
           </CardContent>
         </Card>
       )}
-
       {/* Recurring Points */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Pontos Fortes Recorrentes */}
@@ -180,40 +148,18 @@ const CollaboratorProfile = () => {
                     <Badge className="bg-green-100 text-green-700">{count}x</Badge>
                   </div>
                 ))}
-              </div>
             ) : (
               <p className="text-gray-500 text-sm">Nenhum ponto forte identificado</p>
             )}
-          </CardContent>
-        </Card>
-
         {/* Pontos de Melhoria Recorrentes */}
-        <Card>
-          <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2 text-amber-700">
               <TrendingDown className="h-5 w-5" />
               Pontos de Melhoria Recorrentes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
             {pontos_melhoria_recorrentes?.length > 0 ? (
-              <div className="space-y-3">
                 {pontos_melhoria_recorrentes.map(([ponto, count], index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <span className="text-gray-700">{ponto}</span>
                     <Badge className="bg-amber-100 text-amber-700">{count}x</Badge>
-                  </div>
-                ))}
-              </div>
-            ) : (
               <p className="text-gray-500 text-sm">Nenhum ponto de melhoria identificado</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Feedbacks Timeline */}
-      <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
@@ -267,33 +213,17 @@ const CollaboratorProfile = () => {
                             ))}
                             {feedback.pontos_melhoria?.slice(0, 2).map((p, i) => (
                               <Badge key={i} className="bg-amber-100 text-amber-700 text-xs">{p}</Badge>
-                            ))}
-                          </div>
                         )}
                       </CardContent>
                     </Card>
-                  </div>
-                ))}
-              </div>
-            </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum feedback registrado</p>
-            </div>
           )}
-        </CardContent>
-      </Card>
-
       {/* Action Plans */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
             <ClipboardList className="h-5 w-5" />
             Planos de Ação
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
           {planos_acao?.length > 0 ? (
             <div className="space-y-4">
               {planos_acao.map((plan) => (
@@ -308,26 +238,15 @@ const CollaboratorProfile = () => {
                       <p className="text-sm text-gray-500">
                         Prazo: {formatDate(plan.prazo_final)} • Responsável: {plan.responsavel}
                       </p>
-                    </div>
                     {getPlanStatusBadge(plan.status)}
-                  </div>
                   <div className="flex items-center gap-2">
                     <Progress value={plan.progresso_percentual} className="flex-1 h-2" />
                     <span className="text-sm font-medium">{plan.progresso_percentual}%</span>
-                  </div>
                 </div>
               ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
               <ClipboardList className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum plano de ação vinculado</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 };
-
 export default CollaboratorProfile;

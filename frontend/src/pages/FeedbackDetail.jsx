@@ -13,7 +13,6 @@ import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -22,14 +21,12 @@ import {
 } from '../components/ui/select';
 import { Calendar } from '../components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from '../components/ui/dialog';
-import {
   ArrowLeft,
   Edit,
   CheckCircle2,
@@ -56,24 +53,17 @@ const FeedbackDetail = () => {
   const [feedback, setFeedback] = useState(null);
   const { toast } = useToast();
   const [actionPlans, setActionPlans] = useState([]);
-  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
   const [acknowledging, setAcknowledging] = useState(false);
-  const { toast } = useToast();
   const [planDialogOpen, setPlanDialogOpen] = useState(false);
-  const { toast } = useToast();
   const [newPlan, setNewPlan] = useState({
-  const { toast } = useToast();
     objetivo: '',
     prazo_final: null,
     responsavel: 'Colaborador'
   });
-
   useEffect(() => {
     fetchData();
   }, [id]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -91,27 +81,17 @@ const FeedbackDetail = () => {
       setLoading(false);
     }
   };
-
   const handleAcknowledge = async () => {
     setAcknowledging(true);
-    try {
       await acknowledgeFeedback(id);
       toast({ title: 'Ciência confirmada!' });
       fetchData();
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao confirmar ciência', variant: 'destructive' });
-    } finally {
       setAcknowledging(false);
-    }
-  };
-
   const handleCreatePlan = async () => {
     if (!newPlan.objetivo || !newPlan.prazo_final) {
       toast({ title: 'Erro', description: 'Preencha todos os campos', variant: 'destructive' });
       return;
-    }
-
-    try {
       await createActionPlan({
         feedback_id: id,
         objetivo: newPlan.objetivo,
@@ -121,12 +101,7 @@ const FeedbackDetail = () => {
       toast({ title: 'Plano de ação criado!' });
       setPlanDialogOpen(false);
       setNewPlan({ objetivo: '', prazo_final: null, responsavel: 'Colaborador' });
-      fetchData();
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao criar plano de ação', variant: 'destructive' });
-    }
-  };
-
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Em dia':
@@ -137,31 +112,17 @@ const FeedbackDetail = () => {
         return <Badge className="status-atrasado">Atrasado</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
   const getPlanStatusBadge = (status) => {
-    switch (status) {
       case 'Concluído':
         return <Badge className="bg-green-100 text-green-700">Concluído</Badge>;
       case 'Em andamento':
         return <Badge className="bg-blue-100 text-blue-700">Em andamento</Badge>;
-      case 'Atrasado':
         return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
-    try {
       return format(parseISO(dateStr), "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
     } catch {
       return dateStr;
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -169,11 +130,8 @@ const FeedbackDetail = () => {
       </div>
     );
   }
-
   if (!feedback) {
     return null;
-  }
-
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto" data-testid="feedback-detail-page">
       {/* Header */}
@@ -212,100 +170,56 @@ const FeedbackDetail = () => {
             </Button>
           )}
           {isGestorOrAdmin() && (
-            <Button
               variant="outline"
               onClick={() => navigate(`/feedbacks/${id}/editar`)}
-            >
               <Edit className="h-4 w-4 mr-2" />
               Editar
-            </Button>
-          )}
-        </div>
-      </div>
-
       {/* Status and Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-4 flex items-center gap-3">
             <div className="p-2 bg-gray-100 rounded-lg">
               <User className="h-5 w-5 text-gray-600" />
-            </div>
             <div>
               <p className="text-sm text-gray-500">Colaborador</p>
               <p className="font-medium">{feedback.colaborador_nome}</p>
-            </div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-gray-100 rounded-lg">
               <MessageSquare className="h-5 w-5 text-gray-600" />
-            </div>
-            <div>
               <p className="text-sm text-gray-500">Gestor</p>
               <p className="font-medium">{feedback.gestor_nome}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-gray-100 rounded-lg">
               <Target className="h-5 w-5 text-gray-600" />
-            </div>
-            <div>
               <p className="text-sm text-gray-500">Status</p>
               {getStatusBadge(feedback.status_feedback)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Acknowledgment Info */}
       {feedback.ciencia_colaborador && (
         <Card className="border-l-4 border-l-green-500">
-          <CardContent className="p-4 flex items-center gap-3">
             <CheckCircle2 className="h-5 w-5 text-green-600" />
-            <div>
               <p className="font-medium text-green-700">Ciência Confirmada</p>
               <p className="text-sm text-gray-500">
                 em {formatDate(feedback.data_ciencia)}
               </p>
-            </div>
-          </CardContent>
-        </Card>
       )}
-
       {/* Content */}
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Conteúdo do Feedback</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div>
             <h4 className="font-medium text-gray-700 mb-2">Contexto</h4>
             <p className="text-gray-600 whitespace-pre-wrap">{feedback.contexto}</p>
-          </div>
           
           {feedback.impacto && (
-            <div>
               <h4 className="font-medium text-gray-700 mb-2">Impacto</h4>
               <p className="text-gray-600 whitespace-pre-wrap">{feedback.impacto}</p>
-            </div>
-          )}
-          
           {feedback.expectativa && (
-            <div>
               <h4 className="font-medium text-gray-700 mb-2">Expectativa</h4>
               <p className="text-gray-600 whitespace-pre-wrap">{feedback.expectativa}</p>
-            </div>
-          )}
         </CardContent>
       </Card>
-
       {/* Points */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Pontos Fortes */}
-        <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2 text-green-700">
               <TrendingUp className="h-5 w-5" />
@@ -324,66 +238,31 @@ const FeedbackDetail = () => {
             ) : (
               <p className="text-gray-500 text-sm">Nenhum ponto forte registrado</p>
             )}
-          </CardContent>
-        </Card>
-
         {/* Pontos de Melhoria */}
-        <Card>
-          <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2 text-amber-700">
               <TrendingDown className="h-5 w-5" />
               Pontos de Melhoria
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
             {feedback.pontos_melhoria?.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
                 {feedback.pontos_melhoria.map((ponto, index) => (
                   <Badge key={index} className="bg-amber-100 text-amber-700">
-                    {ponto}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
               <p className="text-gray-500 text-sm">Nenhum ponto de melhoria registrado</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
       {/* Next Feedback */}
       {feedback.data_proximo_feedback && (
         <Card className="border-l-4 border-l-[hsl(30,94%,54%)]">
-          <CardContent className="p-4 flex items-center gap-3">
             <CalendarIcon className="h-5 w-5 text-[hsl(30,94%,54%)]" />
-            <div>
               <p className="text-sm text-gray-500">Próximo Feedback</p>
               <p className="font-medium text-[hsl(210,54%,23%)]">
                 {formatDate(feedback.data_proximo_feedback)}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Action Plans */}
-      <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <ClipboardList className="h-5 w-5" />
             Planos de Ação
           </CardTitle>
-          {isGestorOrAdmin() && (
-            <Button
               size="sm"
               onClick={() => setPlanDialogOpen(true)}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
-            >
               <Plus className="h-4 w-4 mr-2" />
               Novo Plano
-            </Button>
-          )}
-        </CardHeader>
         <CardContent>
           {actionPlans.length > 0 ? (
             <div className="space-y-4">
@@ -405,10 +284,8 @@ const FeedbackDetail = () => {
                   <div className="flex items-center gap-2">
                     <Progress value={plan.progresso_percentual} className="flex-1 h-2" />
                     <span className="text-sm font-medium">{plan.progresso_percentual}%</span>
-                  </div>
                 </div>
               ))}
-            </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
               <ClipboardList className="h-12 w-12 mx-auto mb-2 opacity-50" />
@@ -418,15 +295,8 @@ const FeedbackDetail = () => {
                   variant="link"
                   onClick={() => setPlanDialogOpen(true)}
                   className="text-[hsl(30,94%,54%)]"
-                >
                   Criar plano de ação
                 </Button>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       {/* New Plan Dialog */}
       <Dialog open={planDialogOpen} onOpenChange={setPlanDialogOpen}>
         <DialogContent>
@@ -442,7 +312,6 @@ const FeedbackDetail = () => {
                 onChange={(e) => setNewPlan(prev => ({ ...prev, objetivo: e.target.value }))}
                 rows={3}
               />
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Prazo Final</Label>
@@ -465,13 +334,10 @@ const FeedbackDetail = () => {
                     />
                   </PopoverContent>
                 </Popover>
-              </div>
-              <div className="space-y-2">
                 <Label>Responsável</Label>
                 <Select
                   value={newPlan.responsavel}
                   onValueChange={(v) => setNewPlan(prev => ({ ...prev, responsavel: v }))}
-                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -481,24 +347,15 @@ const FeedbackDetail = () => {
                     <SelectItem value="Ambos">Ambos</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            </div>
-          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPlanDialogOpen(false)}>
               Cancelar
-            </Button>
-            <Button
               onClick={handleCreatePlan}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
-            >
               Criar Plano
-            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
 };
-
 export default FeedbackDetail;

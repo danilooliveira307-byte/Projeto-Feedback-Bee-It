@@ -15,20 +15,17 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
-import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from '../components/ui/dialog';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -38,7 +35,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
-import {
   Plus,
   MoreVertical,
   Edit,
@@ -54,29 +50,19 @@ const Teams = () => {
   const [teams, setTeams] = useState([]);
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-  
   const [dialogOpen, setDialogOpen] = useState(false);
-  const { toast } = useToast();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const { toast } = useToast();
   const [editingTeam, setEditingTeam] = useState(null);
-  const { toast } = useToast();
   const [teamToDelete, setTeamToDelete] = useState(null);
-  const { toast } = useToast();
-  
   const [formData, setFormData] = useState({
-  const { toast } = useToast();
     nome: '',
     empresa: 'Bee It',
     frequencia_padrao_feedback_dias: 30,
     descricao: ''
   });
-
   useEffect(() => {
     fetchTeams();
   }, []);
-
   const fetchTeams = async () => {
     setLoading(true);
     try {
@@ -89,7 +75,6 @@ const Teams = () => {
       setLoading(false);
     }
   };
-
   const handleOpenDialog = (team = null) => {
     if (team) {
       setEditingTeam(team);
@@ -101,23 +86,15 @@ const Teams = () => {
       });
     } else {
       setEditingTeam(null);
-      setFormData({
         nome: '',
         empresa: 'Bee It',
         frequencia_padrao_feedback_dias: 30,
         descricao: ''
-      });
-    }
     setDialogOpen(true);
-  };
-
   const handleSave = async () => {
     if (!formData.nome) {
       toast({ title: 'Erro', description: 'Nome é obrigatório', variant: 'destructive' });
       return;
-    }
-
-    try {
       if (editingTeam) {
         await updateTeam(editingTeam.id, formData);
         toast({ title: 'Time atualizado!' });
@@ -127,25 +104,14 @@ const Teams = () => {
       }
       setDialogOpen(false);
       fetchTeams();
-    } catch (error) {
       toast.error(error.response?.data?.detail || 'Erro ao salvar time');
-    }
-  };
-
   const handleDelete = async () => {
     if (!teamToDelete) return;
-    try {
       await deleteTeam(teamToDelete);
       toast({ title: 'Time removido!' });
-      fetchTeams();
-    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao remover time', variant: 'destructive' });
-    } finally {
       setDeleteDialogOpen(false);
       setTeamToDelete(null);
-    }
-  };
-
   return (
     <div className="space-y-6 animate-fade-in" data-testid="teams-page">
       {/* Header */}
@@ -165,7 +131,6 @@ const Teams = () => {
           </Button>
         )}
       </div>
-
       {/* Teams Table */}
       <Card>
         <CardContent className="p-0">
@@ -186,7 +151,6 @@ const Teams = () => {
                   Criar primeiro time
                 </Button>
               )}
-            </div>
           ) : (
             <Table>
               <TableHeader>
@@ -211,7 +175,6 @@ const Teams = () => {
                     </TableCell>
                     <TableCell className="max-w-xs truncate">
                       {team.descricao || '-'}
-                    </TableCell>
                     {isAdmin() && (
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -234,7 +197,6 @@ const Teams = () => {
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Excluir
-                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
@@ -246,7 +208,6 @@ const Teams = () => {
           )}
         </CardContent>
       </Card>
-
       {/* Team Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
@@ -264,37 +225,25 @@ const Teams = () => {
                 placeholder="Nome do time"
                 data-testid="team-name-input"
               />
-            </div>
-            <div className="space-y-2">
               <Label>Empresa</Label>
-              <Input
                 value={formData.empresa}
                 onChange={(e) => setFormData(prev => ({ ...prev, empresa: e.target.value }))}
                 placeholder="Bee It"
-              />
-            </div>
-            <div className="space-y-2">
               <Label>Frequência de Feedback (dias)</Label>
-              <Input
                 type="number"
                 min={1}
                 value={formData.frequencia_padrao_feedback_dias}
                 onChange={(e) => setFormData(prev => ({ ...prev, frequencia_padrao_feedback_dias: parseInt(e.target.value) || 30 }))}
                 data-testid="team-frequency-input"
-              />
               <p className="text-xs text-gray-500">
                 Intervalo padrão entre feedbacks para colaboradores deste time
               </p>
-            </div>
-            <div className="space-y-2">
               <Label>Descrição</Label>
               <Textarea
                 value={formData.descricao}
                 onChange={(e) => setFormData(prev => ({ ...prev, descricao: e.target.value }))}
                 placeholder="Descrição do time..."
                 rows={3}
-              />
-            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
@@ -306,11 +255,9 @@ const Teams = () => {
               data-testid="save-team-btn"
             >
               {editingTeam ? 'Atualizar' : 'Criar'}
-            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       {/* Delete Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
@@ -325,7 +272,6 @@ const Teams = () => {
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
-            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -334,5 +280,4 @@ const Teams = () => {
     </div>
   );
 };
-
 export default Teams;
