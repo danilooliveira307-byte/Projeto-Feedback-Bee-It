@@ -239,7 +239,11 @@ const Layout = ({ children }) => {
         {/* Logo area when sidebar collapsed */}
         {!sidebarOpen && (
           <div className="flex justify-center py-4 border-b border-slate-800/60">
-            <Hexagon className="h-8 w-8 text-[#F59E0B] fill-[#F59E0B]/20" />
+            <img 
+              src={LOGO_URL} 
+              alt="Bee It" 
+              className="h-8 object-contain"
+            />
           </div>
         )}
         
