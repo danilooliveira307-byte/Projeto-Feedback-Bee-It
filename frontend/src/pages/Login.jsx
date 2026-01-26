@@ -18,6 +18,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [seeding, setSeeding] = useState(false);
   const { login, isAuthenticated } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
