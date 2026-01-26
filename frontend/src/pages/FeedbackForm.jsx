@@ -32,7 +32,8 @@ import {
   X,
   Save,
   Loader2,
-  ClipboardList
+  ClipboardList,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, addDays, parseISO } from 'date-fns';
@@ -207,7 +208,10 @@ const FeedbackForm = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+        <div className="flex flex-col items-center gap-4">
+          <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+          <p className="text-slate-400">Carregando...</p>
+        </div>
       </div>
     );
   }
@@ -215,37 +219,42 @@ const FeedbackForm = () => {
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate(-1)}
+          className="text-slate-400 hover:text-white hover:bg-slate-700"
+        >
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">
+          <h1 className="text-3xl font-bold text-white">
             {isEditing ? 'Editar Feedback' : 'Novo Feedback'}
           </h1>
-          <p className="text-gray-500">
+          <p className="text-slate-400 mt-1">
             {isEditing ? 'Atualize as informações do feedback' : 'Registre um novo feedback para o colaborador'}
           </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Informações Básicas</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-slate-700/50">
+            <h2 className="text-lg font-semibold text-white">Informações Básicas</h2>
+          </div>
+          <div className="p-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="colaborador">Colaborador *</Label>
+                <Label className="text-slate-300" htmlFor="colaborador">Colaborador *</Label>
                 <Select
                   value={formData.colaborador_id}
                   onValueChange={handleColaboradorChange}
                   disabled={isEditing}
                 >
-                  <SelectTrigger data-testid="select-colaborador">
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="select-colaborador">
                     <SelectValue placeholder="Selecione o colaborador" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900 border-slate-700">
                     {users.map(u => (
                       <SelectItem key={u.id} value={u.id}>{u.nome}</SelectItem>
                     ))}
@@ -254,15 +263,15 @@ const FeedbackForm = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tipo">Tipo de Feedback *</Label>
+                <Label className="text-slate-300" htmlFor="tipo">Tipo de Feedback *</Label>
                 <Select
                   value={formData.tipo_feedback}
                   onValueChange={(v) => setFormData(prev => ({ ...prev, tipo_feedback: v }))}
                 >
-                  <SelectTrigger data-testid="select-tipo">
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="select-tipo">
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900 border-slate-700">
                     {FEEDBACK_TYPES.map(t => (
                       <SelectItem key={t} value={t}>{t}</SelectItem>
                     ))}
@@ -272,12 +281,12 @@ const FeedbackForm = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="proximo">Próximo Feedback</Label>
+              <Label className="text-slate-300" htmlFor="proximo">Próximo Feedback</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className="w-full justify-start text-left font-normal"
+                    className="w-full justify-start text-left font-normal bg-slate-900 border-slate-700 text-white hover:bg-slate-800"
                     data-testid="select-proximo-feedback"
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -286,7 +295,7 @@ const FeedbackForm = () => {
                       : 'Selecione a data'}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
+                <PopoverContent className="w-auto p-0 bg-slate-900 border-slate-700" align="start">
                   <Calendar
                     mode="single"
                     selected={formData.data_proximo_feedback}
@@ -304,71 +313,80 @@ const FeedbackForm = () => {
                 checked={formData.confidencial}
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, confidencial: checked }))}
               />
-              <Label htmlFor="confidencial" className="text-sm font-normal">
+              <Label htmlFor="confidencial" className="text-sm font-normal text-slate-300">
                 Feedback confidencial (apenas gestor e colaborador podem ver)
               </Label>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Conteúdo do Feedback</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-slate-700/50">
+            <h2 className="text-lg font-semibold text-white">Conteúdo do Feedback</h2>
+          </div>
+          <div className="p-6 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="contexto">Contexto *</Label>
+              <Label className="text-slate-300" htmlFor="contexto">Contexto *</Label>
               <Textarea
                 id="contexto"
                 placeholder="Descreva o contexto e situação do feedback..."
                 value={formData.contexto}
                 onChange={(e) => setFormData(prev => ({ ...prev, contexto: e.target.value }))}
                 rows={4}
+                className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B]"
                 data-testid="input-contexto"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="impacto">Impacto</Label>
+              <Label className="text-slate-300" htmlFor="impacto">Impacto</Label>
               <Textarea
                 id="impacto"
                 placeholder="Descreva o impacto das ações do colaborador..."
                 value={formData.impacto}
                 onChange={(e) => setFormData(prev => ({ ...prev, impacto: e.target.value }))}
                 rows={3}
+                className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B]"
                 data-testid="input-impacto"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="expectativa">Expectativa</Label>
+              <Label className="text-slate-300" htmlFor="expectativa">Expectativa</Label>
               <Textarea
                 id="expectativa"
                 placeholder="Descreva as expectativas para o futuro..."
                 value={formData.expectativa}
                 onChange={(e) => setFormData(prev => ({ ...prev, expectativa: e.target.value }))}
                 rows={3}
+                className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B]"
                 data-testid="input-expectativa"
               />
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg text-green-700">Pontos Fortes</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <div className="glass-card rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-emerald-500/30">
+              <h2 className="text-lg font-semibold text-emerald-400">Pontos Fortes</h2>
+            </div>
+            <div className="p-6 space-y-4">
               <div className="flex gap-2">
                 <Input
                   placeholder="Adicionar ponto forte..."
                   value={newPontoForte}
                   onChange={(e) => setNewPontoForte(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addPontoForte())}
+                  className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
                   data-testid="input-ponto-forte"
                 />
-                <Button type="button" size="icon" onClick={addPontoForte} variant="outline">
+                <Button 
+                  type="button" 
+                  size="icon" 
+                  onClick={addPontoForte} 
+                  className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30"
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -376,7 +394,7 @@ const FeedbackForm = () => {
                 {formData.pontos_fortes.map((ponto, index) => (
                   <Badge
                     key={index}
-                    className="bg-green-100 text-green-700 hover:bg-green-200 cursor-pointer"
+                    className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 cursor-pointer"
                     onClick={() => removePontoForte(index)}
                   >
                     {ponto}
@@ -384,23 +402,29 @@ const FeedbackForm = () => {
                   </Badge>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg text-amber-700">Pontos de Melhoria</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <div className="glass-card rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-amber-500/30">
+              <h2 className="text-lg font-semibold text-amber-400">Pontos de Melhoria</h2>
+            </div>
+            <div className="p-6 space-y-4">
               <div className="flex gap-2">
                 <Input
                   placeholder="Adicionar ponto de melhoria..."
                   value={newPontoMelhoria}
                   onChange={(e) => setNewPontoMelhoria(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addPontoMelhoria())}
+                  className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
                   data-testid="input-ponto-melhoria"
                 />
-                <Button type="button" size="icon" onClick={addPontoMelhoria} variant="outline">
+                <Button 
+                  type="button" 
+                  size="icon" 
+                  onClick={addPontoMelhoria} 
+                  className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 border border-amber-500/30"
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -408,7 +432,7 @@ const FeedbackForm = () => {
                 {formData.pontos_melhoria.map((ponto, index) => (
                   <Badge
                     key={index}
-                    className="bg-amber-100 text-amber-700 hover:bg-amber-200 cursor-pointer"
+                    className="bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 cursor-pointer"
                     onClick={() => removePontoMelhoria(index)}
                   >
                     {ponto}
@@ -416,51 +440,53 @@ const FeedbackForm = () => {
                   </Badge>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {!isEditing && (
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <ClipboardList className="h-5 w-5" />
-                  Plano de Ação
-                </CardTitle>
-                <Checkbox
-                  id="createPlan"
-                  checked={createPlan}
-                  onCheckedChange={setCreatePlan}
-                />
+          <div className="glass-card rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-slate-700/50 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ClipboardList className="h-5 w-5 text-[#F59E0B]" />
+                <h2 className="text-lg font-semibold text-white">Plano de Ação</h2>
               </div>
-            </CardHeader>
+              <Checkbox
+                id="createPlan"
+                checked={createPlan}
+                onCheckedChange={setCreatePlan}
+              />
+            </div>
             {createPlan && (
-              <CardContent className="space-y-4">
+              <div className="p-6 space-y-4">
                 <div className="space-y-2">
-                  <Label>Objetivo do Plano</Label>
+                  <Label className="text-slate-300">Objetivo do Plano</Label>
                   <Textarea
                     placeholder="Descreva o objetivo do plano de ação..."
                     value={planData.objetivo}
                     onChange={(e) => setPlanData(prev => ({ ...prev, objetivo: e.target.value }))}
                     rows={3}
+                    className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
                     data-testid="input-plan-objetivo"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Prazo Final</Label>
+                    <Label className="text-slate-300">Prazo Final</Label>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal">
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start text-left font-normal bg-slate-900 border-slate-700 text-white hover:bg-slate-800"
+                        >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {planData.prazo_final 
                             ? format(planData.prazo_final, "dd/MM/yyyy")
                             : 'Selecione a data'}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-auto p-0 bg-slate-900 border-slate-700" align="start">
                         <Calendar
                           mode="single"
                           selected={planData.prazo_final}
@@ -473,15 +499,15 @@ const FeedbackForm = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Responsável</Label>
+                    <Label className="text-slate-300">Responsável</Label>
                     <Select
                       value={planData.responsavel}
                       onValueChange={(v) => setPlanData(prev => ({ ...prev, responsavel: v }))}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-slate-900 border-slate-700">
                         <SelectItem value="Colaborador">Colaborador</SelectItem>
                         <SelectItem value="Gestor">Gestor</SelectItem>
                         <SelectItem value="Ambos">Ambos</SelectItem>
@@ -489,19 +515,24 @@ const FeedbackForm = () => {
                     </Select>
                   </div>
                 </div>
-              </CardContent>
+              </div>
             )}
-          </Card>
+          </div>
         )}
 
         <div className="flex justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => navigate(-1)}>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => navigate(-1)}
+            className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
+          >
             Cancelar
           </Button>
           <Button
             type="submit"
             disabled={saving}
-            className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+            className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20"
             data-testid="save-feedback-btn"
           >
             {saving ? (
