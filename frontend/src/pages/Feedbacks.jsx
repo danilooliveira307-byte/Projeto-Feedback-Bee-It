@@ -38,8 +38,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
-import { Calendar } from '../components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import {
   Plus,
   Search,
@@ -49,8 +47,8 @@ import {
   Edit,
   Trash2,
   CheckCircle2,
-  CalendarIcon,
-  X
+  X,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
@@ -167,13 +165,13 @@ const Feedbacks = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Em dia':
-        return <Badge className="status-em-dia">Em dia</Badge>;
+        return <Badge className="status-em-dia text-xs">Em dia</Badge>;
       case 'Aguardando ciência':
-        return <Badge className="status-aguardando">Aguardando ciência</Badge>;
+        return <Badge className="status-aguardando text-xs">Aguardando ciência</Badge>;
       case 'Atrasado':
-        return <Badge className="status-atrasado">Atrasado</Badge>;
+        return <Badge className="status-atrasado text-xs">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300 text-xs">{status}</Badge>;
     }
   };
 
@@ -191,10 +189,10 @@ const Feedbacks = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">
+          <h1 className="text-3xl font-bold text-white">
             {isColaborador() ? 'Meus Feedbacks' : 'Feedbacks'}
           </h1>
-          <p className="text-gray-500">
+          <p className="text-slate-400 mt-1">
             {feedbacks.length} feedback{feedbacks.length !== 1 ? 's' : ''} encontrado{feedbacks.length !== 1 ? 's' : ''}
           </p>
         </div>
@@ -202,7 +200,7 @@ const Feedbacks = () => {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={showFilters ? 'bg-gray-100' : ''}
+            className={`bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 ${showFilters ? 'bg-slate-700' : ''}`}
           >
             <Filter className="h-4 w-4 mr-2" />
             Filtros
@@ -210,7 +208,7 @@ const Feedbacks = () => {
           {isGestorOrAdmin() && (
             <Button
               onClick={() => navigate('/feedbacks/novo')}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20"
               data-testid="new-feedback-btn"
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -222,166 +220,187 @@ const Feedbacks = () => {
 
       {/* Filters */}
       {showFilters && (
-        <Card className="animate-fade-in">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {isGestorOrAdmin() && (
-                <div className="space-y-2">
-                  <Label>Colaborador</Label>
-                  <Select
-                    value={filters.colaborador_id}
-                    onValueChange={(v) => handleFilterChange('colaborador_id', v)}
-                  >
-                    <SelectTrigger data-testid="filter-colaborador">
-                      <SelectValue placeholder="Todos" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos</SelectItem>
-                      {users.filter(u => u.papel === 'COLABORADOR').map(u => (
-                        <SelectItem key={u.id} value={u.id}>{u.nome}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
+        <div className="glass-card rounded-xl p-6 animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {isGestorOrAdmin() && (
               <div className="space-y-2">
-                <Label>Time</Label>
+                <Label className="text-slate-300">Colaborador</Label>
                 <Select
-                  value={filters.time_id}
-                  onValueChange={(v) => handleFilterChange('time_id', v)}
+                  value={filters.colaborador_id}
+                  onValueChange={(v) => handleFilterChange('colaborador_id', v)}
                 >
-                  <SelectTrigger data-testid="filter-time">
+                  <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-colaborador">
                     <SelectValue placeholder="Todos" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900 border-slate-700">
                     <SelectItem value="all">Todos</SelectItem>
-                    {teams.map(t => (
-                      <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                    {users.filter(u => u.papel === 'COLABORADOR').map(u => (
+                      <SelectItem key={u.id} value={u.id}>{u.nome}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+            )}
 
-              <div className="space-y-2">
-                <Label>Tipo</Label>
-                <Select
-                  value={filters.tipo_feedback}
-                  onValueChange={(v) => handleFilterChange('tipo_feedback', v)}
-                >
-                  <SelectTrigger data-testid="filter-tipo">
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    {FEEDBACK_TYPES.map(t => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Status</Label>
-                <Select
-                  value={filters.status_feedback}
-                  onValueChange={(v) => handleFilterChange('status_feedback', v)}
-                >
-                  <SelectTrigger data-testid="filter-status">
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    {FEEDBACK_STATUS.map(s => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label className="text-slate-300">Time</Label>
+              <Select
+                value={filters.time_id}
+                onValueChange={(v) => handleFilterChange('time_id', v)}
+              >
+                <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-time">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectItem value="all">Todos</SelectItem>
+                  {teams.map(t => (
+                    <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
-              <Button variant="outline" onClick={clearFilters}>
-                <X className="h-4 w-4 mr-2" />
-                Limpar
-              </Button>
-              <Button onClick={applyFilters} className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]">
-                <Search className="h-4 w-4 mr-2" />
-                Aplicar Filtros
-              </Button>
+            <div className="space-y-2">
+              <Label className="text-slate-300">Tipo</Label>
+              <Select
+                value={filters.tipo_feedback}
+                onValueChange={(v) => handleFilterChange('tipo_feedback', v)}
+              >
+                <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-tipo">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectItem value="all">Todos</SelectItem>
+                  {FEEDBACK_TYPES.map(t => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="space-y-2">
+              <Label className="text-slate-300">Status</Label>
+              <Select
+                value={filters.status_feedback}
+                onValueChange={(v) => handleFilterChange('status_feedback', v)}
+              >
+                <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-status">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectItem value="all">Todos</SelectItem>
+                  {FEEDBACK_STATUS.map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-slate-700/50">
+            <Button 
+              variant="outline" 
+              onClick={clearFilters}
+              className="bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Limpar
+            </Button>
+            <Button 
+              onClick={applyFilters} 
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
+            >
+              <Search className="h-4 w-4 mr-2" />
+              Aplicar Filtros
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Feedbacks Table */}
-      <Card>
-        <CardContent className="p-0">
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+      <div className="glass-card rounded-xl overflow-hidden">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="flex flex-col items-center gap-4">
+              <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+              <p className="text-slate-400">Carregando feedbacks...</p>
             </div>
-          ) : feedbacks.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-              <p>Nenhum feedback encontrado</p>
-              {isGestorOrAdmin() && (
-                <Button
-                  variant="link"
-                  onClick={() => navigate('/feedbacks/novo')}
-                  className="text-[hsl(30,94%,54%)]"
-                >
-                  Criar primeiro feedback
-                </Button>
-              )}
-            </div>
-          ) : (
+          </div>
+        ) : feedbacks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 text-slate-500">
+            <p>Nenhum feedback encontrado</p>
+            {isGestorOrAdmin() && (
+              <Button
+                variant="link"
+                onClick={() => navigate('/feedbacks/novo')}
+                className="text-[#F59E0B]"
+              >
+                Criar primeiro feedback
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Colaborador</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead>Próximo</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
+                <TableRow className="border-slate-700/50 hover:bg-transparent">
+                  <TableHead className="text-slate-400">Colaborador</TableHead>
+                  <TableHead className="text-slate-400">Tipo</TableHead>
+                  <TableHead className="text-slate-400">Data</TableHead>
+                  <TableHead className="text-slate-400">Próximo</TableHead>
+                  <TableHead className="text-slate-400">Status</TableHead>
+                  <TableHead className="text-slate-400 text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {feedbacks.map((feedback) => (
-                  <TableRow key={feedback.id} data-testid={`feedback-row-${feedback.id}`}>
+                  <TableRow 
+                    key={feedback.id} 
+                    className="border-slate-700/50 hover:bg-slate-800/50"
+                    data-testid={`feedback-row-${feedback.id}`}
+                  >
                     <TableCell>
                       <div>
-                        <p className="font-medium">{feedback.colaborador_nome}</p>
-                        <p className="text-sm text-gray-500">por {feedback.gestor_nome}</p>
+                        <p className="font-medium text-white">{feedback.colaborador_nome}</p>
+                        <p className="text-sm text-slate-500">por {feedback.gestor_nome}</p>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">{feedback.tipo_feedback}</Badge>
+                      <Badge className="bg-slate-700 text-slate-300">{feedback.tipo_feedback}</Badge>
                     </TableCell>
-                    <TableCell>{formatDate(feedback.data_feedback)}</TableCell>
-                    <TableCell>{formatDate(feedback.data_proximo_feedback)}</TableCell>
+                    <TableCell className="text-slate-300">{formatDate(feedback.data_feedback)}</TableCell>
+                    <TableCell className="text-slate-300">{formatDate(feedback.data_proximo_feedback)}</TableCell>
                     <TableCell>{getStatusBadge(feedback.status_feedback)}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
+                          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-slate-700">
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => navigate(`/feedbacks/${feedback.id}`)}>
+                        <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
+                          <DropdownMenuItem 
+                            onClick={() => navigate(`/feedbacks/${feedback.id}`)}
+                            className="text-slate-300 hover:text-white hover:bg-slate-700"
+                          >
                             <Eye className="h-4 w-4 mr-2" />
                             Visualizar
                           </DropdownMenuItem>
                           {isColaborador() && !feedback.ciencia_colaborador && (
-                            <DropdownMenuItem onClick={() => handleAcknowledge(feedback.id)}>
+                            <DropdownMenuItem 
+                              onClick={() => handleAcknowledge(feedback.id)}
+                              className="text-slate-300 hover:text-white hover:bg-slate-700"
+                            >
                               <CheckCircle2 className="h-4 w-4 mr-2" />
                               Confirmar Ciência
                             </DropdownMenuItem>
                           )}
                           {isGestorOrAdmin() && (
                             <>
-                              <DropdownMenuItem onClick={() => navigate(`/feedbacks/${feedback.id}/editar`)}>
+                              <DropdownMenuItem 
+                                onClick={() => navigate(`/feedbacks/${feedback.id}/editar`)}
+                                className="text-slate-300 hover:text-white hover:bg-slate-700"
+                              >
                                 <Edit className="h-4 w-4 mr-2" />
                                 Editar
                               </DropdownMenuItem>
@@ -391,7 +410,7 @@ const Feedbacks = () => {
                                     setFeedbackToDelete(feedback.id);
                                     setDeleteDialogOpen(true);
                                   }}
-                                  className="text-red-600"
+                                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                                 >
                                   <Trash2 className="h-4 w-4 mr-2" />
                                   Excluir
@@ -406,24 +425,26 @@ const Feedbacks = () => {
                 ))}
               </TableBody>
             </Table>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        )}
+      </div>
 
       {/* Delete Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-slate-900 border-slate-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-white">Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">
               Esta ação não pode ser desfeita. O feedback e seus planos de ação relacionados serão removidos permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white">
+              Cancelar
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 text-white"
             >
               Excluir
             </AlertDialogAction>

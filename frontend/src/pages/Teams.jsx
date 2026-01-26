@@ -44,7 +44,8 @@ import {
   Edit,
   Trash2,
   Building2,
-  Calendar
+  Calendar,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
@@ -144,13 +145,13 @@ const Teams = () => {
     <div className="space-y-6 animate-fade-in" data-testid="teams-page">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Times</h1>
-          <p className="text-gray-500">{teams.length} times cadastrados</p>
+          <h1 className="text-3xl font-bold text-white">Times</h1>
+          <p className="text-slate-400 mt-1">{teams.length} times cadastrados</p>
         </div>
         {isAdmin() && (
           <Button
             onClick={() => handleOpenDialog()}
-            className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+            className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20"
             data-testid="new-team-btn"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -159,141 +160,157 @@ const Teams = () => {
         )}
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+      <div className="glass-card rounded-xl overflow-hidden">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="flex flex-col items-center gap-4">
+              <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+              <p className="text-slate-400">Carregando times...</p>
             </div>
-          ) : teams.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-              <Building2 className="h-12 w-12 mb-2 opacity-50" />
-              <p>Nenhum time cadastrado</p>
-              {isAdmin() && (
-                <Button
-                  variant="link"
-                  onClick={() => handleOpenDialog()}
-                  className="text-[hsl(30,94%,54%)]"
+          </div>
+        ) : teams.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-64 text-slate-500">
+            <Building2 className="h-12 w-12 mb-2 opacity-50" />
+            <p>Nenhum time cadastrado</p>
+            {isAdmin() && (
+              <Button
+                variant="link"
+                onClick={() => handleOpenDialog()}
+                className="text-[#F59E0B]"
+              >
+                Criar primeiro time
+              </Button>
+            )}
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow className="border-slate-700/50 hover:bg-transparent">
+                <TableHead className="text-slate-400">Nome</TableHead>
+                <TableHead className="text-slate-400">Empresa</TableHead>
+                <TableHead className="text-slate-400">Frequência de Feedback</TableHead>
+                <TableHead className="text-slate-400">Descrição</TableHead>
+                {isAdmin() && <TableHead className="text-slate-400 text-right">Ações</TableHead>}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {teams.map((team) => (
+                <TableRow 
+                  key={team.id} 
+                  className="border-slate-700/50 hover:bg-slate-800/50"
+                  data-testid={`team-row-${team.id}`}
                 >
-                  Criar primeiro time
-                </Button>
-              )}
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Empresa</TableHead>
-                  <TableHead>Frequência de Feedback</TableHead>
-                  <TableHead>Descrição</TableHead>
-                  {isAdmin() && <TableHead className="text-right">Ações</TableHead>}
+                  <TableCell className="font-medium text-white">{team.nome}</TableCell>
+                  <TableCell className="text-slate-300">{team.empresa}</TableCell>
+                  <TableCell>
+                    <Badge className="bg-blue-500/20 text-blue-300 border border-blue-500/30 flex items-center gap-1 w-fit">
+                      <Calendar className="h-3 w-3" />
+                      A cada {team.frequencia_padrao_feedback_dias} dias
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate text-slate-400">
+                    {team.descricao || '-'}
+                  </TableCell>
+                  {isAdmin() && (
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white hover:bg-slate-700">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
+                          <DropdownMenuItem 
+                            onClick={() => handleOpenDialog(team)}
+                            className="text-slate-300 hover:text-white hover:bg-slate-700"
+                          >
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setTeamToDelete(team.id);
+                              setDeleteDialogOpen(true);
+                            }}
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  )}
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {teams.map((team) => (
-                  <TableRow key={team.id} data-testid={`team-row-${team.id}`}>
-                    <TableCell className="font-medium">{team.nome}</TableCell>
-                    <TableCell>{team.empresa}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="flex items-center gap-1 w-fit">
-                        <Calendar className="h-3 w-3" />
-                        A cada {team.frequencia_padrao_feedback_dias} dias
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {team.descricao || '-'}
-                    </TableCell>
-                    {isAdmin() && (
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleOpenDialog(team)}>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setTeamToDelete(team.id);
-                                setDeleteDialogOpen(true);
-                              }}
-                              className="text-red-600"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Excluir
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    )}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-slate-900 border-slate-700">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-white">
               {editingTeam ? 'Editar Time' : 'Novo Time'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Nome *</Label>
+              <Label className="text-slate-300">Nome *</Label>
               <Input
                 value={formData.nome}
                 onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
                 placeholder="Nome do time"
+                className="bg-slate-950 border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B]"
                 data-testid="team-name-input"
               />
             </div>
             <div className="space-y-2">
-              <Label>Empresa</Label>
+              <Label className="text-slate-300">Empresa</Label>
               <Input
                 value={formData.empresa}
                 onChange={(e) => setFormData(prev => ({ ...prev, empresa: e.target.value }))}
                 placeholder="Bee It"
+                className="bg-slate-950 border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B]"
               />
             </div>
             <div className="space-y-2">
-              <Label>Frequência de Feedback (dias)</Label>
+              <Label className="text-slate-300">Frequência de Feedback (dias)</Label>
               <Input
                 type="number"
                 min={1}
                 value={formData.frequencia_padrao_feedback_dias}
                 onChange={(e) => setFormData(prev => ({ ...prev, frequencia_padrao_feedback_dias: parseInt(e.target.value) || 30 }))}
+                className="bg-slate-950 border-slate-700 text-white focus:border-[#F59E0B]"
                 data-testid="team-frequency-input"
               />
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-slate-500">
                 Intervalo padrão entre feedbacks para colaboradores deste time
               </p>
             </div>
             <div className="space-y-2">
-              <Label>Descrição</Label>
+              <Label className="text-slate-300">Descrição</Label>
               <Textarea
                 value={formData.descricao}
                 onChange={(e) => setFormData(prev => ({ ...prev, descricao: e.target.value }))}
                 placeholder="Descrição do time..."
                 rows={3}
+                className="bg-slate-950 border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B]"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setDialogOpen(false)}
+              className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
+            >
               Cancelar
             </Button>
             <Button
               onClick={handleSave}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
               data-testid="save-team-btn"
             >
               {editingTeam ? 'Atualizar' : 'Criar'}
@@ -303,18 +320,20 @@ const Teams = () => {
       </Dialog>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-slate-900 border-slate-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-white">Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">
               Esta ação não pode ser desfeita. O time será removido permanentemente.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white">
+              Cancelar
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 text-white"
             >
               Excluir
             </AlertDialogAction>
