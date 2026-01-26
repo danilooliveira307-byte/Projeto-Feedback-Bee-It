@@ -31,10 +31,6 @@ const CollaboratorProfile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchProfile();
-  }, [id]);
-
   const fetchProfile = async () => {
     setLoading(true);
     try {
@@ -48,6 +44,11 @@ const CollaboratorProfile = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const getStatusBadge = (status) => {
     switch (status) {
