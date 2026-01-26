@@ -66,10 +66,6 @@ const ActionPlanDetail = () => {
     comentario: ''
   });
 
-  useEffect(() => {
-    fetchData();
-  }, [id]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -89,6 +85,11 @@ const ActionPlanDetail = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const handleAddItem = async () => {
     if (!newItemText.trim()) return;
