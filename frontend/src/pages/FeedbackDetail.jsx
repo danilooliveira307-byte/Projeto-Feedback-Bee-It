@@ -79,7 +79,7 @@ const FeedbackDetail = () => {
       setActionPlans(plansRes.data);
     } catch (error) {
       console.error('Failed to fetch feedback:', error);
-      toast.error('Erro ao carregar feedback');
+      toast({ title: 'Erro', description: 'Erro ao carregar feedback', variant: 'destructive' });
       navigate('/feedbacks');
     } finally {
       setLoading(false);
@@ -90,10 +90,10 @@ const FeedbackDetail = () => {
     setAcknowledging(true);
     try {
       await acknowledgeFeedback(id);
-      toast.success('Ciência confirmada!');
+      toast({ title: 'Ciência confirmada!' });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao confirmar ciência');
+      toast({ title: 'Erro', description: 'Erro ao confirmar ciência', variant: 'destructive' });
     } finally {
       setAcknowledging(false);
     }
@@ -101,7 +101,7 @@ const FeedbackDetail = () => {
 
   const handleCreatePlan = async () => {
     if (!newPlan.objetivo || !newPlan.prazo_final) {
-      toast.error('Preencha todos os campos');
+      toast({ title: 'Erro', description: 'Preencha todos os campos', variant: 'destructive' });
       return;
     }
 
@@ -112,12 +112,12 @@ const FeedbackDetail = () => {
         prazo_final: newPlan.prazo_final.toISOString(),
         responsavel: newPlan.responsavel
       });
-      toast.success('Plano de ação criado!');
+      toast({ title: 'Plano de ação criado!' });
       setPlanDialogOpen(false);
       setNewPlan({ objetivo: '', prazo_final: null, responsavel: 'Colaborador' });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao criar plano de ação');
+      toast({ title: 'Erro', description: 'Erro ao criar plano de ação', variant: 'destructive' });
     }
   };
 

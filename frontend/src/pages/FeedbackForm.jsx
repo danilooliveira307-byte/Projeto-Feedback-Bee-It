@@ -103,7 +103,7 @@ const FeedbackForm = () => {
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      toast.error('Erro ao carregar dados');
+      toast({ title: 'Erro', description: 'Erro ao carregar dados', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ const FeedbackForm = () => {
     e.preventDefault();
     
     if (!formData.colaborador_id || !formData.tipo_feedback || !formData.contexto) {
-      toast.error('Preencha os campos obrigatórios');
+      toast({ title: 'Erro', description: 'Preencha os campos obrigatórios', variant: 'destructive' });
       return;
     }
 
@@ -178,11 +178,11 @@ const FeedbackForm = () => {
       
       if (isEditing) {
         await updateFeedback(id, payload);
-        toast.success('Feedback atualizado com sucesso!');
+        toast({ title: 'Feedback atualizado com sucesso!' });
       } else {
         const response = await createFeedback(payload);
         feedbackId = response.data.id;
-        toast.success('Feedback criado com sucesso!');
+        toast({ title: 'Feedback criado com sucesso!' });
       }
 
       // Create action plan if requested
@@ -193,7 +193,7 @@ const FeedbackForm = () => {
           prazo_final: planData.prazo_final.toISOString(),
           responsavel: planData.responsavel
         });
-        toast.success('Plano de ação criado!');
+        toast({ title: 'Plano de ação criado!' });
       }
 
       navigate('/feedbacks');

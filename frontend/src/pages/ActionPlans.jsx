@@ -75,7 +75,7 @@ const ActionPlans = () => {
       setPlans(response.data);
     } catch (error) {
       console.error('Failed to fetch plans:', error);
-      toast.error('Erro ao carregar planos de ação');
+      toast({ title: 'Erro', description: 'Erro ao carregar planos de ação', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -85,10 +85,10 @@ const ActionPlans = () => {
     if (!planToDelete) return;
     try {
       await deleteActionPlan(planToDelete);
-      toast.success('Plano removido com sucesso');
+      toast({ title: 'Plano removido com sucesso' });
       fetchPlans();
     } catch (error) {
-      toast.error('Erro ao remover plano');
+      toast({ title: 'Erro', description: 'Erro ao remover plano', variant: 'destructive' });
     } finally {
       setDeleteDialogOpen(false);
       setPlanToDelete(null);

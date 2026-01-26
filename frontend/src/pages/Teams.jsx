@@ -77,7 +77,7 @@ const Teams = () => {
       setTeams(response.data);
     } catch (error) {
       console.error('Failed to fetch teams:', error);
-      toast.error('Erro ao carregar times');
+      toast({ title: 'Erro', description: 'Erro ao carregar times', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -106,17 +106,17 @@ const Teams = () => {
 
   const handleSave = async () => {
     if (!formData.nome) {
-      toast.error('Nome é obrigatório');
+      toast({ title: 'Erro', description: 'Nome é obrigatório', variant: 'destructive' });
       return;
     }
 
     try {
       if (editingTeam) {
         await updateTeam(editingTeam.id, formData);
-        toast.success('Time atualizado!');
+        toast({ title: 'Time atualizado!' });
       } else {
         await createTeam(formData);
-        toast.success('Time criado!');
+        toast({ title: 'Time criado!' });
       }
       setDialogOpen(false);
       fetchTeams();
@@ -129,10 +129,10 @@ const Teams = () => {
     if (!teamToDelete) return;
     try {
       await deleteTeam(teamToDelete);
-      toast.success('Time removido!');
+      toast({ title: 'Time removido!' });
       fetchTeams();
     } catch (error) {
-      toast.error('Erro ao remover time');
+      toast({ title: 'Erro', description: 'Erro ao remover time', variant: 'destructive' });
     } finally {
       setDeleteDialogOpen(false);
       setTeamToDelete(null);

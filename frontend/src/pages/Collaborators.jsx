@@ -36,7 +36,7 @@ const Collaborators = () => {
       setCollaborators(filtered);
     } catch (error) {
       console.error('Failed to fetch collaborators:', error);
-      toast.error('Erro ao carregar colaboradores');
+      toast({ title: 'Erro', description: 'Erro ao carregar colaboradores', variant: 'destructive' });
     } finally {
       setLoading(false);
     }

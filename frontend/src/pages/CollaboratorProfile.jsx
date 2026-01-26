@@ -41,7 +41,7 @@ const CollaboratorProfile = () => {
       setProfile(response.data);
     } catch (error) {
       console.error('Failed to fetch profile:', error);
-      toast.error('Erro ao carregar perfil');
+      toast({ title: 'Erro', description: 'Erro ao carregar perfil', variant: 'destructive' });
       navigate(-1);
     } finally {
       setLoading(false);

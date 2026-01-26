@@ -287,10 +287,10 @@ const ColaboradorDashboard = ({ data, onRefresh }) => {
     setAcknowledging(feedbackId);
     try {
       await acknowledgeFeedback(feedbackId);
-      toast.success('Ciência confirmada com sucesso!');
+      toast({ title: 'Ciência confirmada com sucesso!' });
       onRefresh();
     } catch (error) {
-      toast.error('Erro ao confirmar ciência');
+      toast({ title: 'Erro', description: 'Erro ao confirmar ciência', variant: 'destructive' });
     } finally {
       setAcknowledging(null);
     }
@@ -410,7 +410,7 @@ const Dashboard = () => {
       setData(response.data);
     } catch (error) {
       console.error('Failed to fetch dashboard:', error);
-      toast.error('Erro ao carregar dashboard');
+      toast({ title: 'Erro', description: 'Erro ao carregar dashboard', variant: 'destructive' });
     } finally {
       setLoading(false);
     }

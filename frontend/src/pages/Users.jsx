@@ -104,7 +104,7 @@ const Users = () => {
       setGestores(usersRes.data.filter(u => u.papel === 'GESTOR' || u.papel === 'ADMIN'));
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      toast.error('Erro ao carregar usuários');
+      toast({ title: 'Erro', description: 'Erro ao carregar usuários', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -139,12 +139,12 @@ const Users = () => {
 
   const handleSave = async () => {
     if (!formData.nome || !formData.email) {
-      toast.error('Preencha os campos obrigatórios');
+      toast({ title: 'Erro', description: 'Preencha os campos obrigatórios', variant: 'destructive' });
       return;
     }
 
     if (!editingUser && !formData.password) {
-      toast.error('Senha é obrigatória para novos usuários');
+      toast({ title: 'Erro', description: 'Senha é obrigatória para novos usuários', variant: 'destructive' });
       return;
     }
 
@@ -156,14 +156,14 @@ const Users = () => {
         if (!updateData.gestor_direto_id) updateData.gestor_direto_id = null;
         
         await updateUser(editingUser.id, updateData);
-        toast.success('Usuário atualizado!');
+        toast({ title: 'Usuário atualizado!' });
       } else {
         const createData = { ...formData };
         if (!createData.time_id) delete createData.time_id;
         if (!createData.gestor_direto_id) delete createData.gestor_direto_id;
         
         await createUser(createData);
-        toast.success('Usuário criado!');
+        toast({ title: 'Usuário criado!' });
       }
       setDialogOpen(false);
       fetchData();
@@ -176,10 +176,10 @@ const Users = () => {
     if (!userToDelete) return;
     try {
       await deleteUser(userToDelete);
-      toast.success('Usuário removido!');
+      toast({ title: 'Usuário removido!' });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao remover usuário');
+      toast({ title: 'Erro', description: 'Erro ao remover usuário', variant: 'destructive' });
     } finally {
       setDeleteDialogOpen(false);
       setUserToDelete(null);

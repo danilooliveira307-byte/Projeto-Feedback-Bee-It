@@ -84,7 +84,7 @@ const ActionPlanDetail = () => {
       setCheckins(checkinsRes.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      toast.error('Erro ao carregar plano de ação');
+      toast({ title: 'Erro', description: 'Erro ao carregar plano de ação', variant: 'destructive' });
       navigate('/planos-acao');
     } finally {
       setLoading(false);
@@ -101,9 +101,9 @@ const ActionPlanDetail = () => {
       });
       setNewItemText('');
       fetchData();
-      toast.success('Item adicionado!');
+      toast({ title: 'Item adicionado!' });
     } catch (error) {
-      toast.error('Erro ao adicionar item');
+      toast({ title: 'Erro', description: 'Erro ao adicionar item', variant: 'destructive' });
     }
   };
 
@@ -112,7 +112,7 @@ const ActionPlanDetail = () => {
       await updateActionPlanItem(item.id, { concluido: !item.concluido });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao atualizar item');
+      toast({ title: 'Erro', description: 'Erro ao atualizar item', variant: 'destructive' });
     }
   };
 
@@ -120,15 +120,15 @@ const ActionPlanDetail = () => {
     try {
       await deleteActionPlanItem(itemId);
       fetchData();
-      toast.success('Item removido!');
+      toast({ title: 'Item removido!' });
     } catch (error) {
-      toast.error('Erro ao remover item');
+      toast({ title: 'Erro', description: 'Erro ao remover item', variant: 'destructive' });
     }
   };
 
   const handleCreateCheckin = async () => {
     if (!newCheckin.comentario.trim()) {
-      toast.error('Adicione um comentário');
+      toast({ title: 'Erro', description: 'Adicione um comentário', variant: 'destructive' });
       return;
     }
 
@@ -141,9 +141,9 @@ const ActionPlanDetail = () => {
       setCheckinDialogOpen(false);
       setNewCheckin({ progresso: 'Regular', comentario: '' });
       fetchData();
-      toast.success('Check-in registrado!');
+      toast({ title: 'Check-in registrado!' });
     } catch (error) {
-      toast.error('Erro ao registrar check-in');
+      toast({ title: 'Erro', description: 'Erro ao registrar check-in', variant: 'destructive' });
     }
   };
 

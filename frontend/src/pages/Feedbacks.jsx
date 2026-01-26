@@ -101,7 +101,7 @@ const Feedbacks = () => {
       setUsers(usersRes.data);
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      toast.error('Erro ao carregar feedbacks');
+      toast({ title: 'Erro', description: 'Erro ao carregar feedbacks', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -143,10 +143,10 @@ const Feedbacks = () => {
     if (!feedbackToDelete) return;
     try {
       await deleteFeedback(feedbackToDelete);
-      toast.success('Feedback removido com sucesso');
+      toast({ title: 'Feedback removido com sucesso' });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao remover feedback');
+      toast({ title: 'Erro', description: 'Erro ao remover feedback', variant: 'destructive' });
     } finally {
       setDeleteDialogOpen(false);
       setFeedbackToDelete(null);
@@ -156,10 +156,10 @@ const Feedbacks = () => {
   const handleAcknowledge = async (feedbackId) => {
     try {
       await acknowledgeFeedback(feedbackId);
-      toast.success('Ciência confirmada!');
+      toast({ title: 'Ciência confirmada!' });
       fetchData();
     } catch (error) {
-      toast.error('Erro ao confirmar ciência');
+      toast({ title: 'Erro', description: 'Erro ao confirmar ciência', variant: 'destructive' });
     }
   };
 
