@@ -1163,10 +1163,20 @@ async def get_collaborator_profile(colaborador_id: str, user: dict = Depends(get
 async def seed_data():
     """Seed initial demo data"""
     
+    credentials = {
+        "admin": {"email": "admin@beeit.com.br", "senha": "admin123"},
+        "gestor": {"email": "gestor@beeit.com.br", "senha": "gestor123"},
+        "colaborador": {"email": "colaborador@beeit.com.br", "senha": "colab123"}
+    }
+    
     # Check if already seeded
     existing_admin = await db.usuarios.find_one({"email": "admin@beeit.com.br"})
     if existing_admin:
-        return {"message": "Dados de demonstração já existem"}
+        return {
+            "message": "Dados de demonstração já existem",
+            "usuarios": credentials,
+            "already_exists": True
+        }
     
     # Create teams
     times = [
