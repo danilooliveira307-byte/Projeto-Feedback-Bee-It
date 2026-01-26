@@ -134,10 +134,12 @@ const Layout = ({ children }) => {
               {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
             <Link to="/dashboard" className="flex items-center gap-3">
-              <div className="relative">
-                <Hexagon className="h-8 w-8 text-[#F59E0B] fill-[#F59E0B]/20" />
-              </div>
-              <span className="font-bold text-xl text-white hidden sm:block">Bee It <span className="text-[#F59E0B]">Feedback</span></span>
+              <img 
+                src={LOGO_URL} 
+                alt="Bee It" 
+                className="h-9 object-contain"
+              />
+              <span className="font-bold text-xl text-[#F59E0B] hidden sm:block">Feedback</span>
             </Link>
           </div>
 
