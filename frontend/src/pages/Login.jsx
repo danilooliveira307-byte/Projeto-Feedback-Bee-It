@@ -7,7 +7,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardContent } from '../components/ui/card';
 import { Loader2, Mail, Lock, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
+import { useToast } from '../hooks/use-toast';
 
 const LOGO_URL = 'https://customer-assets.emergentagent.com/job_perftracker-9/artifacts/tf78nmcp_image.png';
 
