@@ -263,7 +263,7 @@ class BeeItFeedbackTester:
         
         success, data = self.make_request('POST', 'feedbacks', feedback_data, 
                                         gestor_token, 201)
-        if success:
+        if success and 'id' in data:
             test_feedback_id = data['id']
             self.log_test("Create Feedback", True)
             
