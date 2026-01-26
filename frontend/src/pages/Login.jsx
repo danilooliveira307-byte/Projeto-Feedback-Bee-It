@@ -48,7 +48,14 @@ const Login = () => {
     setSeeding(true);
     try {
       const response = await seedData();
-      toast.success('Dados de demonstração criados!');
+      const data = response.data;
+      
+      if (data.already_exists) {
+        toast.info('Dados de demonstração já existem!');
+      } else {
+        toast.success('Dados de demonstração criados!');
+      }
+      
       setError('');
       // Show demo credentials
       toast.info(
@@ -62,11 +69,7 @@ const Login = () => {
       );
     } catch (err) {
       const message = err.response?.data?.message || err.response?.data?.detail || 'Erro ao criar dados de demonstração';
-      if (message.includes('já existem')) {
-        toast.info('Dados de demonstração já existem');
-      } else {
-        toast.error(message);
-      }
+      toast.error(message);
     } finally {
       setSeeding(false);
     }
