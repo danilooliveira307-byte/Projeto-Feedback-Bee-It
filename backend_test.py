@@ -200,9 +200,10 @@ class BeeItFeedbackTester:
             return False
 
         # Create user
+        timestamp = int(datetime.now().timestamp())
         user_data = {
-            "nome": "Test User",
-            "email": "testuser@beeit.com.br",
+            "nome": f"Test User {timestamp}",
+            "email": f"testuser{timestamp}@beeit.com.br",
             "password": "testpass123",
             "papel": "COLABORADOR",
             "ativo": True
