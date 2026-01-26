@@ -57,16 +57,10 @@ const Login = () => {
       }
       
       setError('');
-      // Show demo credentials
-      toast.info(
-        <div className="space-y-1">
-          <p className="font-medium">Credenciais de demonstração:</p>
-          <p>Admin: admin@beeit.com.br / admin123</p>
-          <p>Gestor: gestor@beeit.com.br / gestor123</p>
-          <p>Colaborador: colaborador@beeit.com.br / colab123</p>
-        </div>,
-        { duration: 10000 }
-      );
+      // Show demo credentials as separate toasts
+      toast.info('Admin: admin@beeit.com.br / admin123', { duration: 10000 });
+      toast.info('Gestor: gestor@beeit.com.br / gestor123', { duration: 10000 });
+      toast.info('Colaborador: colaborador@beeit.com.br / colab123', { duration: 10000 });
     } catch (err) {
       const message = err.response?.data?.message || err.response?.data?.detail || 'Erro ao criar dados de demonstração';
       toast.error(message);
