@@ -23,30 +23,30 @@ import {
   Calendar,
   ChevronRight,
   Plus,
-  Eye
+  Eye,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-const StatCard = ({ title, value, icon: Icon, color, subtitle, onClick }) => (
-  <Card 
-    className={`card-hover cursor-pointer ${onClick ? '' : 'cursor-default'}`}
+const StatCard = ({ title, value, icon: Icon, color, bgColor, subtitle, onClick }) => (
+  <div 
+    className={`metric-card rounded-xl p-6 card-hover ${onClick ? 'cursor-pointer' : ''}`}
     onClick={onClick}
+    data-testid={`stat-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
   >
-    <CardContent className="p-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-gray-500 mb-1">{title}</p>
-          <p className={`text-3xl font-bold ${color}`}>{value}</p>
-          {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
-        </div>
-        <div className={`p-3 rounded-xl ${color.replace('text-', 'bg-').replace('-600', '-100').replace('-700', '-100')}`}>
-          <Icon className={`h-6 w-6 ${color}`} />
-        </div>
+    <div className="flex items-start justify-between">
+      <div>
+        <p className="text-sm text-slate-400 mb-1">{title}</p>
+        <p className={`text-3xl font-bold ${color}`}>{value}</p>
+        {subtitle && <p className="text-xs text-slate-500 mt-1">{subtitle}</p>}
       </div>
-    </CardContent>
-  </Card>
+      <div className={`p-3 rounded-xl ${bgColor}`}>
+        <Icon className={`h-6 w-6 ${color}`} />
+      </div>
+    </div>
+  </div>
 );
 
 const FeedbackItem = ({ feedback, onAcknowledge, showAcknowledge = false }) => {
@@ -55,13 +55,13 @@ const FeedbackItem = ({ feedback, onAcknowledge, showAcknowledge = false }) => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Em dia':
-        return <Badge className="status-em-dia">Em dia</Badge>;
+        return <Badge className="status-em-dia text-xs">Em dia</Badge>;
       case 'Aguardando ciência':
-        return <Badge className="status-aguardando">Aguardando ciência</Badge>;
+        return <Badge className="status-aguardando text-xs">Aguardando ciência</Badge>;
       case 'Atrasado':
-        return <Badge className="status-atrasado">Atrasado</Badge>;
+        return <Badge className="status-atrasado text-xs">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300 text-xs">{status}</Badge>;
     }
   };
 
@@ -74,15 +74,15 @@ const FeedbackItem = ({ feedback, onAcknowledge, showAcknowledge = false }) => {
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+    <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl hover:bg-slate-800/80 transition-all border border-slate-700/50">
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <span className="font-medium text-[hsl(210,54%,23%)]">
+          <span className="font-medium text-white">
             {feedback.colaborador_nome || feedback.gestor_nome}
           </span>
           {getStatusBadge(feedback.status_feedback)}
         </div>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-slate-400">
           {feedback.tipo_feedback} • {formatDate(feedback.data_feedback)}
         </p>
       </div>
@@ -94,7 +94,7 @@ const FeedbackItem = ({ feedback, onAcknowledge, showAcknowledge = false }) => {
               e.stopPropagation();
               onAcknowledge(feedback.id);
             }}
-            className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+            className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
             data-testid={`acknowledge-btn-${feedback.id}`}
           >
             <CheckCircle2 className="h-4 w-4 mr-1" />
@@ -105,6 +105,7 @@ const FeedbackItem = ({ feedback, onAcknowledge, showAcknowledge = false }) => {
           size="sm"
           variant="ghost"
           onClick={() => navigate(`/feedbacks/${feedback.id}`)}
+          className="text-slate-400 hover:text-white hover:bg-slate-700"
         >
           <Eye className="h-4 w-4" />
         </Button>
@@ -121,18 +122,19 @@ const AdminDashboard = ({ data }) => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Dashboard Admin</h1>
-          <p className="text-gray-500">Visão geral do sistema Bee It Feedback</p>
+          <h1 className="text-3xl font-bold text-white">Dashboard Admin</h1>
+          <p className="text-slate-400 mt-1">Visão geral do sistema Bee It Feedback</p>
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Bento Style */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total de Usuários"
           value={data.total_usuarios}
           icon={Users}
-          color="text-[hsl(210,54%,30%)]"
+          color="text-blue-400"
+          bgColor="bg-blue-500/20"
           subtitle={`${data.total_admins} admins • ${data.total_gestores} gestores • ${data.total_colaboradores} colaboradores`}
           onClick={() => navigate('/usuarios')}
         />
@@ -140,14 +142,16 @@ const AdminDashboard = ({ data }) => {
           title="Times"
           value={data.total_times}
           icon={Building2}
-          color="text-purple-600"
+          color="text-purple-400"
+          bgColor="bg-purple-500/20"
           onClick={() => navigate('/times')}
         />
         <StatCard
           title="Total de Feedbacks"
           value={data.total_feedbacks}
           icon={MessageSquare}
-          color="text-[hsl(30,94%,54%)]"
+          color="text-[#F59E0B]"
+          bgColor="bg-[#F59E0B]/20"
           subtitle={`${data.feedbacks_atrasados} atrasados • ${data.feedbacks_aguardando} aguardando`}
           onClick={() => navigate('/feedbacks')}
         />
@@ -155,34 +159,35 @@ const AdminDashboard = ({ data }) => {
           title="Planos de Ação"
           value={data.total_planos}
           icon={ClipboardList}
-          color="text-green-600"
+          color="text-emerald-400"
+          bgColor="bg-emerald-500/20"
           subtitle={`${data.planos_concluidos} concluídos • ${data.planos_atrasados} atrasados`}
           onClick={() => navigate('/planos-acao')}
         />
       </div>
 
       {/* Feedbacks by Type */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Feedbacks por Tipo</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-lg font-semibold text-white">Feedbacks por Tipo</h2>
+        </div>
+        <div className="p-6">
           <div className="space-y-4">
             {Object.entries(data.feedbacks_por_tipo || {}).map(([tipo, count]) => (
               <div key={tipo} className="flex items-center gap-4">
-                <span className="text-sm text-gray-600 w-48">{tipo}</span>
-                <div className="flex-1">
-                  <Progress 
-                    value={(count / data.total_feedbacks) * 100} 
-                    className="h-2"
+                <span className="text-sm text-slate-400 w-48">{tipo}</span>
+                <div className="flex-1 bg-slate-800 rounded-full h-2 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] rounded-full transition-all"
+                    style={{ width: `${(count / data.total_feedbacks) * 100}%` }}
                   />
                 </div>
-                <span className="text-sm font-medium w-12 text-right">{count}</span>
+                <span className="text-sm font-medium text-white w-12 text-right">{count}</span>
               </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
@@ -195,12 +200,12 @@ const GestorDashboard = ({ data }) => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Dashboard do Gestor</h1>
-          <p className="text-gray-500">Acompanhe sua equipe e feedbacks</p>
+          <h1 className="text-3xl font-bold text-white">Dashboard do Gestor</h1>
+          <p className="text-slate-400 mt-1">Acompanhe sua equipe e feedbacks</p>
         </div>
         <Button 
           onClick={() => navigate('/feedbacks/novo')}
-          className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+          className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20"
           data-testid="new-feedback-btn"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -210,24 +215,30 @@ const GestorDashboard = ({ data }) => {
 
       {/* Alert Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <StatCard
-          title="Feedbacks Atrasados"
-          value={data.feedbacks_atrasados}
-          icon={AlertTriangle}
-          color="text-red-600"
-          onClick={() => navigate('/feedbacks?status=Atrasado')}
-        />
+        <div className="metric-card-highlight rounded-xl p-6 card-hover cursor-pointer" onClick={() => navigate('/feedbacks?status=Atrasado')}>
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-sm text-slate-400 mb-1">Feedbacks Atrasados</p>
+              <p className="text-3xl font-bold text-red-400">{data.feedbacks_atrasados}</p>
+            </div>
+            <div className="p-3 rounded-xl bg-red-500/20">
+              <AlertTriangle className="h-6 w-6 text-red-400" />
+            </div>
+          </div>
+        </div>
         <StatCard
           title="Vencendo em 7 dias"
           value={data.feedbacks_7_dias}
           icon={Clock}
-          color="text-yellow-600"
+          color="text-yellow-400"
+          bgColor="bg-yellow-500/20"
         />
         <StatCard
           title="Vencendo em 30 dias"
           value={data.feedbacks_30_dias}
           icon={Calendar}
-          color="text-blue-600"
+          color="text-blue-400"
+          bgColor="bg-blue-500/20"
         />
       </div>
 
@@ -236,44 +247,52 @@ const GestorDashboard = ({ data }) => {
           title="Aguardando Ciência"
           value={data.aguardando_ciencia}
           icon={Eye}
-          color="text-sky-600"
+          color="text-sky-400"
+          bgColor="bg-sky-500/20"
         />
         <StatCard
           title="Sem Feedback Recente"
           value={data.colaboradores_sem_feedback}
           icon={Users}
-          color="text-orange-600"
+          color="text-orange-400"
+          bgColor="bg-orange-500/20"
           subtitle="Últimos 90 dias"
         />
         <StatCard
           title="Planos Atrasados"
           value={data.planos_atrasados}
           icon={ClipboardList}
-          color="text-red-600"
+          color="text-red-400"
+          bgColor="bg-red-500/20"
           onClick={() => navigate('/planos-acao?status=Atrasado')}
         />
       </div>
 
       {/* Recent Feedbacks */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg">Feedbacks Recentes</CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/feedbacks')}>
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Feedbacks Recentes</h2>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate('/feedbacks')}
+            className="text-slate-400 hover:text-white"
+          >
             Ver todos <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-6">
           <div className="space-y-3">
             {data.recent_feedbacks?.length > 0 ? (
               data.recent_feedbacks.map((feedback) => (
                 <FeedbackItem key={feedback.id} feedback={feedback} />
               ))
             ) : (
-              <p className="text-center text-gray-500 py-8">Nenhum feedback recente</p>
+              <p className="text-center text-slate-500 py-8">Nenhum feedback recente</p>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
@@ -310,8 +329,8 @@ const ColaboradorDashboard = ({ data, onRefresh }) => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Meu Dashboard</h1>
-          <p className="text-gray-500">Acompanhe seus feedbacks e desenvolvimento</p>
+          <h1 className="text-3xl font-bold text-white">Meu Dashboard</h1>
+          <p className="text-slate-400 mt-1">Acompanhe seus feedbacks e desenvolvimento</p>
         </div>
       </div>
 
@@ -321,56 +340,65 @@ const ColaboradorDashboard = ({ data, onRefresh }) => {
           title="Total de Feedbacks"
           value={data.total_feedbacks}
           icon={MessageSquare}
-          color="text-[hsl(30,94%,54%)]"
+          color="text-[#F59E0B]"
+          bgColor="bg-[#F59E0B]/20"
           onClick={() => navigate('/feedbacks')}
         />
         <StatCard
           title="Pendentes de Ciência"
           value={data.pendente_ciencia}
           icon={Eye}
-          color="text-yellow-600"
+          color="text-yellow-400"
+          bgColor="bg-yellow-500/20"
         />
         <StatCard
           title="Planos Ativos"
           value={data.planos_ativos}
           icon={ClipboardList}
-          color="text-blue-600"
+          color="text-blue-400"
+          bgColor="bg-blue-500/20"
           onClick={() => navigate('/planos-acao')}
         />
         <StatCard
           title="Planos Atrasados"
           value={data.planos_atrasados}
           icon={AlertTriangle}
-          color="text-red-600"
+          color="text-red-400"
+          bgColor="bg-red-500/20"
         />
       </div>
 
       {/* Next Feedback */}
       {data.proximo_feedback && (
-        <Card className="border-l-4 border-l-[hsl(30,94%,54%)]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-[hsl(30,94%,54%)]" />
-              <div>
-                <p className="text-sm text-gray-500">Próximo feedback agendado</p>
-                <p className="font-semibold text-[hsl(210,54%,23%)]">
-                  {formatDate(data.proximo_feedback)}
-                </p>
-              </div>
+        <div className="metric-card-highlight rounded-xl p-6 border-l-4 border-l-[#F59E0B]">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-[#F59E0B]/20">
+              <Calendar className="h-6 w-6 text-[#F59E0B]" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-sm text-slate-400">Próximo feedback agendado</p>
+              <p className="font-semibold text-white text-lg">
+                {formatDate(data.proximo_feedback)}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Recent Feedbacks */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg">Meus Feedbacks</CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/feedbacks')}>
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-white">Meus Feedbacks</h2>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => navigate('/feedbacks')}
+            className="text-slate-400 hover:text-white"
+          >
             Ver todos <ChevronRight className="h-4 w-4 ml-1" />
           </Button>
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-6">
           <div className="space-y-3">
             {data.recent_feedbacks?.length > 0 ? (
               data.recent_feedbacks.map((feedback) => (
@@ -382,11 +410,11 @@ const ColaboradorDashboard = ({ data, onRefresh }) => {
                 />
               ))
             ) : (
-              <p className="text-center text-gray-500 py-8">Nenhum feedback recebido ainda</p>
+              <p className="text-center text-slate-500 py-8">Nenhum feedback recebido ainda</p>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
@@ -425,7 +453,10 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+        <div className="flex flex-col items-center gap-4">
+          <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+          <p className="text-slate-400">Carregando dashboard...</p>
+        </div>
       </div>
     );
   }
