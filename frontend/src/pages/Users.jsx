@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getUsers, getTeams, createUser, updateUser, deleteUser } from '../lib/api';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import {
   Table,
   TableBody,
   TableCell,
@@ -21,17 +22,20 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
+import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from '../components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -42,6 +46,7 @@ import {
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
 import { Switch } from '../components/ui/switch';
+import {
   Plus,
   Search,
   MoreVertical,
@@ -57,20 +62,23 @@ const ROLES = [
   { value: 'GESTOR', label: 'Gestor' },
   { value: 'COLABORADOR', label: 'Colaborador' }
 ];
+
 const Users = () => {
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
+  const { toast } = useToast();
   
   const [users, setUsers] = useState([]);
-  const { toast } = useToast();
   const [teams, setTeams] = useState([]);
   const [gestores, setGestores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  
   const [formData, setFormData] = useState({
     nome: '',
     email: '',
@@ -80,9 +88,11 @@ const Users = () => {
     gestor_direto_id: '',
     ativo: true
   });
+
   useEffect(() => {
     fetchData();
   }, []);
+
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -100,6 +110,7 @@ const Users = () => {
       setLoading(false);
     }
   };
+
   const handleOpenDialog = (user = null) => {
     if (user) {
       setEditingUser(user);
@@ -114,19 +125,31 @@ const Users = () => {
       });
     } else {
       setEditingUser(null);
+      setFormData({
         nome: '',
         email: '',
+        password: '',
         papel: 'COLABORADOR',
         time_id: '',
         gestor_direto_id: '',
         ativo: true
+      });
+    }
     setDialogOpen(true);
+  };
+
   const handleSave = async () => {
     if (!formData.nome || !formData.email) {
       toast({ title: 'Erro', description: 'Preencha os campos obrigatórios', variant: 'destructive' });
       return;
+    }
+
     if (!editingUser && !formData.password) {
       toast({ title: 'Erro', description: 'Senha é obrigatória para novos usuários', variant: 'destructive' });
+      return;
+    }
+
+    try {
       if (editingUser) {
         const updateData = { ...formData };
         if (!updateData.password) delete updateData.password;
@@ -139,19 +162,31 @@ const Users = () => {
         const createData = { ...formData };
         if (!createData.time_id) delete createData.time_id;
         if (!createData.gestor_direto_id) delete createData.gestor_direto_id;
+        
         await createUser(createData);
         toast({ title: 'Usuário criado!' });
       }
       setDialogOpen(false);
       fetchData();
-      toast.error(error.response?.data?.detail || 'Erro ao salvar usuário');
+    } catch (error) {
+      toast({ title: 'Erro', description: error.response?.data?.detail || 'Erro ao salvar usuário', variant: 'destructive' });
+    }
+  };
+
   const handleDelete = async () => {
     if (!userToDelete) return;
+    try {
       await deleteUser(userToDelete);
       toast({ title: 'Usuário removido!' });
+      fetchData();
+    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao remover usuário', variant: 'destructive' });
+    } finally {
       setDeleteDialogOpen(false);
       setUserToDelete(null);
+    }
+  };
+
   const getRoleBadge = (papel) => {
     switch (papel) {
       case 'ADMIN':
@@ -160,16 +195,21 @@ const Users = () => {
         return <Badge className="bg-blue-100 text-blue-700">Gestor</Badge>;
       default:
         return <Badge className="bg-green-100 text-green-700">Colaborador</Badge>;
+    }
+  };
+
   const getTeamName = (teamId) => {
     const team = teams.find(t => t.id === teamId);
     return team?.nome || '-';
+  };
+
   const filteredUsers = users.filter(u =>
     u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
   return (
     <div className="space-y-6 animate-fade-in" data-testid="users-page">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Usuários</h1>
@@ -184,7 +224,7 @@ const Users = () => {
           Novo Usuário
         </Button>
       </div>
-      {/* Search */}
+
       <Card>
         <CardContent className="p-4">
           <div className="relative">
@@ -199,7 +239,8 @@ const Users = () => {
           </div>
         </CardContent>
       </Card>
-      {/* Users Table */}
+
+      <Card>
         <CardContent className="p-0">
           {loading ? (
             <div className="flex items-center justify-center h-64">
@@ -209,6 +250,7 @@ const Users = () => {
             <div className="flex flex-col items-center justify-center h-64 text-gray-500">
               <UsersIcon className="h-12 w-12 mb-2 opacity-50" />
               <p>Nenhum usuário encontrado</p>
+            </div>
           ) : (
             <Table>
               <TableHeader>
@@ -261,14 +303,19 @@ const Users = () => {
                             >
                               <Trash2 className="h-4 w-4 mr-2" />
                               Excluir
+                            </DropdownMenuItem>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           )}
-      {/* User Dialog */}
+        </CardContent>
+      </Card>
+
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -285,18 +332,28 @@ const Users = () => {
                 placeholder="Nome completo"
                 data-testid="user-name-input"
               />
+            </div>
+            <div className="space-y-2">
               <Label>Email *</Label>
+              <Input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 placeholder="email@beeit.com.br"
                 data-testid="user-email-input"
+              />
+            </div>
+            <div className="space-y-2">
               <Label>{editingUser ? 'Nova Senha (opcional)' : 'Senha *'}</Label>
+              <Input
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                 placeholder="••••••••"
                 data-testid="user-password-input"
+              />
+            </div>
+            <div className="space-y-2">
               <Label>Papel</Label>
               <Select
                 value={formData.papel}
@@ -311,14 +368,24 @@ const Users = () => {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+            <div className="space-y-2">
               <Label>Time</Label>
+              <Select
                 value={formData.time_id}
                 onValueChange={(v) => setFormData(prev => ({ ...prev, time_id: v }))}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecione um time" />
+                </SelectTrigger>
+                <SelectContent>
                   <SelectItem value="">Nenhum</SelectItem>
                   {teams.map(t => (
                     <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {formData.papel === 'COLABORADOR' && (
               <div className="space-y-2">
                 <Label>Gestor Direto</Label>
@@ -343,6 +410,9 @@ const Users = () => {
               <Switch
                 checked={formData.ativo}
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, ativo: checked }))}
+              />
+            </div>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>
               Cancelar
@@ -353,10 +423,11 @@ const Users = () => {
               data-testid="save-user-btn"
             >
               {editingUser ? 'Atualizar' : 'Criar'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {/* Delete Dialog */}
+
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -370,11 +441,14 @@ const Users = () => {
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  );
 };
+
 export default Users;

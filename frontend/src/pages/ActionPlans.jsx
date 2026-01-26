@@ -13,11 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -27,6 +29,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
+import {
   Filter,
   MoreVertical,
   Eye,
@@ -40,24 +43,28 @@ import { ptBR } from 'date-fns/locale';
 
 const ACTION_PLAN_STATUS = ['Não iniciado', 'Em andamento', 'Concluído', 'Atrasado'];
 const RESPONSIBLE_TYPES = ['Colaborador', 'Gestor', 'Ambos'];
+
 const ActionPlans = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { isGestorOrAdmin } = useAuth();
+  const { toast } = useToast();
   
   const [plans, setPlans] = useState([]);
-  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [planToDelete, setPlanToDelete] = useState(null);
+  
   const [filters, setFilters] = useState({
     status: searchParams.get('status') || '',
     responsavel: ''
   });
   const [showFilters, setShowFilters] = useState(false);
+
   useEffect(() => {
     fetchPlans();
   }, []);
+
   const fetchPlans = async () => {
     setLoading(true);
     try {
@@ -74,14 +81,21 @@ const ActionPlans = () => {
       setLoading(false);
     }
   };
+
   const handleDelete = async () => {
     if (!planToDelete) return;
+    try {
       await deleteActionPlan(planToDelete);
       toast({ title: 'Plano removido com sucesso' });
       fetchPlans();
+    } catch (error) {
       toast({ title: 'Erro', description: 'Erro ao remover plano', variant: 'destructive' });
+    } finally {
       setDeleteDialogOpen(false);
       setPlanToDelete(null);
+    }
+  };
+
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Concluído':
@@ -92,14 +106,20 @@ const ActionPlans = () => {
         return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
+    try {
       return format(parseISO(dateStr), 'dd/MM/yyyy', { locale: ptBR });
     } catch {
       return dateStr;
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in" data-testid="action-plans-page">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Planos de Ação</h1>
@@ -116,7 +136,7 @@ const ActionPlans = () => {
           Filtros
         </Button>
       </div>
-      {/* Filters */}
+
       {showFilters && (
         <Card className="animate-fade-in">
           <CardContent className="p-4">
@@ -138,12 +158,26 @@ const ActionPlans = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="space-y-2">
                 <label className="text-sm font-medium">Responsável</label>
+                <Select
                   value={filters.responsavel}
                   onValueChange={(v) => setFilters(prev => ({ ...prev, responsavel: v }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
                     {RESPONSIBLE_TYPES.map(r => (
                       <SelectItem key={r} value={r}>{r}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
+
             <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
               <Button
                 variant="outline"
@@ -155,21 +189,28 @@ const ActionPlans = () => {
                 <X className="h-4 w-4 mr-2" />
                 Limpar
               </Button>
+              <Button
                 onClick={fetchPlans}
                 className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              >
                 Aplicar Filtros
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
-      {/* Plans Grid */}
+
       {loading ? (
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+        </div>
       ) : plans.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center h-64 text-gray-500">
             <ClipboardList className="h-12 w-12 mb-2 opacity-50" />
             <p>Nenhum plano de ação encontrado</p>
+          </CardContent>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {plans.map((plan) => (
@@ -225,12 +266,18 @@ const ActionPlans = () => {
                     <span className="text-sm font-medium w-10 text-right">
                       {plan.progresso_percentual}%
                     </span>
+                  </div>
+
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <span>Responsável: {plan.responsavel}</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ))}
-      {/* Delete Dialog */}
+        </div>
+      )}
+
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -244,6 +291,7 @@ const ActionPlans = () => {
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -252,4 +300,5 @@ const ActionPlans = () => {
     </div>
   );
 };
+
 export default ActionPlans;
