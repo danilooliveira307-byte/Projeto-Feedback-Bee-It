@@ -153,8 +153,9 @@ class BeeItFeedbackTester:
             return False
 
         # Create team
+        timestamp = int(datetime.now().timestamp())
         team_data = {
-            "nome": "Test Team",
+            "nome": f"Test Team {timestamp}",
             "empresa": "Bee It Test",
             "frequencia_padrao_feedback_dias": 15,
             "descricao": "Team created by automated test"
