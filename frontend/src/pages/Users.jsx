@@ -395,7 +395,7 @@ const Users = () => {
                   <SelectValue placeholder="Selecione um time" />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
-                  <SelectItem value="">Nenhum</SelectItem>
+                  <SelectItem value="none">Nenhum</SelectItem>
                   {teams.map(t => (
                     <SelectItem key={t.id} value={t.id}>{t.nome}</SelectItem>
                   ))}
@@ -413,7 +413,7 @@ const Users = () => {
                     <SelectValue placeholder="Selecione o gestor" />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
-                    <SelectItem value="">Nenhum</SelectItem>
+                    <SelectItem value="none">Nenhum</SelectItem>
                     {gestores.map(g => (
                       <SelectItem key={g.id} value={g.id}>{g.nome}</SelectItem>
                     ))}
