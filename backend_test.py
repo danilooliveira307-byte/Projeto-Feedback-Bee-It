@@ -210,7 +210,7 @@ class BeeItFeedbackTester:
         
         success, data = self.make_request('POST', 'users', user_data, 
                                         admin_token, 201)
-        if success:
+        if success and 'id' in data:
             test_user_id = data['id']
             self.log_test("Create User", True)
             
