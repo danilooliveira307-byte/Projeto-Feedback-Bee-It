@@ -5,11 +5,8 @@ import { seedData } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Card, CardContent } from '../components/ui/card';
-import { Loader2, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Loader2, Mail, Lock, AlertCircle, Hexagon, Database, ArrowRight } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
-
-const LOGO_URL = 'https://customer-assets.emergentagent.com/job_perftracker-9/artifacts/tf78nmcp_image.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +14,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [seeding, setSeeding] = useState(false);
+  const [seedMessage, setSeedMessage] = useState('');
   const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -47,24 +45,23 @@ const Login = () => {
 
   const handleSeedData = async () => {
     setSeeding(true);
+    setSeedMessage('');
     try {
       const response = await seedData();
       const data = response.data;
       
       if (data.already_exists) {
+        setSeedMessage('Dados de demonstração já existem!');
         toast({ title: 'Dados de demonstração já existem!' });
       } else {
+        setSeedMessage('Dados criados com sucesso!');
         toast({ title: 'Dados de demonstração criados!' });
       }
       
       setError('');
-      // Show demo credentials
-      toast({ 
-        title: 'Credenciais de demonstração',
-        description: 'Admin: admin@beeit.com.br / admin123\nGestor: gestor@beeit.com.br / gestor123\nColaborador: colaborador@beeit.com.br / colab123'
-      });
     } catch (err) {
       const message = err.response?.data?.message || err.response?.data?.detail || 'Erro ao criar dados de demonstração';
+      setSeedMessage(message);
       toast({ title: 'Erro', description: message, variant: 'destructive' });
     } finally {
       setSeeding(false);
@@ -72,106 +69,190 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen hex-pattern flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-2xl animate-fade-in">
-        <CardContent className="p-8">
-          <div className="flex flex-col items-center mb-8">
-            <img
-              src={LOGO_URL}
-              alt="Bee It"
-              className="h-16 object-contain mb-4"
-              data-testid="login-logo"
-            />
-            <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Bee It Feedback</h1>
-            <p className="text-sm text-gray-500 mt-1">Integração única. De ponta a ponta.</p>
+    <div className="min-h-screen bg-[#020617] flex">
+      {/* Left Panel - Branding */}
+      <div className="hidden lg:flex lg:w-1/2 hex-pattern relative overflow-hidden">
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#020617]/90 via-[#0F172A]/80 to-[#020617]/90" />
+        
+        {/* Orange glow effect */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#F59E0B]/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-[#F59E0B]/10 rounded-full blur-3xl" />
+        
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center p-12 lg:p-16">
+          <div className="flex items-center gap-4 mb-8">
+            <Hexagon className="h-14 w-14 text-[#F59E0B] fill-[#F59E0B]/20" />
+            <div>
+              <h1 className="text-3xl font-bold text-white">Bee It</h1>
+              <p className="text-[#F59E0B] font-medium">Feedback</p>
+            </div>
+          </div>
+          
+          <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-6">
+            Gestão de <br />
+            <span className="text-[#F59E0B]">Feedbacks</span> <br />
+            Corporativos
+          </h2>
+          
+          <p className="text-slate-400 text-lg max-w-md mb-8">
+            Centralize feedbacks, acompanhe o desenvolvimento da sua equipe e impulsione resultados com nossa plataforma integrada.
+          </p>
+
+          {/* Features list */}
+          <div className="space-y-4">
+            {[
+              'Acompanhamento de desempenho em tempo real',
+              'Planos de ação personalizados',
+              'Dashboards por papel de usuário',
+              'Notificações e alertas automáticos'
+            ].map((feature, idx) => (
+              <div key={idx} className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-[#F59E0B]" />
+                <span className="text-slate-300">{feature}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-md">
+          {/* Mobile logo */}
+          <div className="flex items-center gap-3 mb-10 lg:hidden">
+            <Hexagon className="h-10 w-10 text-[#F59E0B] fill-[#F59E0B]/20" />
+            <span className="text-2xl font-bold text-white">Bee It <span className="text-[#F59E0B]">Feedback</span></span>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div 
-                className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm animate-fade-in"
-                data-testid="login-error-message"
+          <div className="glass-card rounded-2xl p-8 animate-fade-in">
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold text-white mb-2">Bem-vindo de volta</h3>
+              <p className="text-slate-400">Entre com suas credenciais para continuar</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div 
+                  className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm animate-fade-in"
+                  data-testid="login-error-message"
+                >
+                  <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-slate-300">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-12 h-12 bg-[#0F172A] border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B] focus:ring-[#F59E0B]/20 rounded-xl"
+                    required
+                    data-testid="login-email-input"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-slate-300">Senha</Label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-12 h-12 bg-[#0F172A] border-slate-700 text-white placeholder:text-slate-500 focus:border-[#F59E0B] focus:ring-[#F59E0B]/20 rounded-xl"
+                    required
+                    data-testid="login-password-input"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold rounded-xl shadow-lg shadow-orange-500/20 transition-all duration-200 hover:-translate-y-0.5"
+                data-testid="login-submit-btn"
               >
-                <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Entrando...
+                  </>
+                ) : (
+                  <>
+                    Entrar
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </>
+                )}
+              </Button>
+            </form>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 bg-[hsl(210,25%,97%)] border-[hsl(210,20%,90%)] focus:border-[hsl(30,94%,54%)] focus:ring-[hsl(30,94%,54%,0.2)]"
-                  required
-                  data-testid="login-email-input"
-                />
+            {/* Demo Section */}
+            <div className="mt-8 pt-6 border-t border-slate-700/50">
+              <div className="text-center mb-4">
+                <p className="text-sm text-slate-400">
+                  Primeiro acesso? Crie dados de demonstração:
+                </p>
+              </div>
+              
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleSeedData}
+                disabled={seeding}
+                className="w-full h-11 bg-slate-800/50 hover:bg-slate-700/50 border-slate-700 text-slate-300 hover:text-white rounded-xl transition-all duration-200"
+                data-testid="seed-data-btn"
+              >
+                {seeding ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Criando...
+                  </>
+                ) : (
+                  <>
+                    <Database className="mr-2 h-4 w-4" />
+                    Criar Dados de Demonstração
+                  </>
+                )}
+              </Button>
+
+              {seedMessage && (
+                <p className={`mt-3 text-sm text-center ${seedMessage.includes('Erro') ? 'text-red-400' : 'text-emerald-400'}`}>
+                  {seedMessage}
+                </p>
+              )}
+
+              {/* Demo credentials */}
+              <div className="mt-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
+                <p className="text-xs text-slate-400 font-medium mb-3 uppercase tracking-wider">Credenciais de Demonstração</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between text-slate-300">
+                    <span className="text-slate-500">Admin:</span>
+                    <span className="font-mono">admin@beeit.com.br / admin123</span>
+                  </div>
+                  <div className="flex justify-between text-slate-300">
+                    <span className="text-slate-500">Gestor:</span>
+                    <span className="font-mono">gestor@beeit.com.br / gestor123</span>
+                  </div>
+                  <div className="flex justify-between text-slate-300">
+                    <span className="text-slate-500">Colab:</span>
+                    <span className="font-mono">colaborador@beeit.com.br / colab123</span>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 bg-[hsl(210,25%,97%)] border-[hsl(210,20%,90%)] focus:border-[hsl(30,94%,54%)] focus:ring-[hsl(30,94%,54%,0.2)]"
-                  required
-                  data-testid="login-password-input"
-                />
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)] text-white font-medium py-2.5"
-              data-testid="login-submit-btn"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Entrando...
-                </>
-              ) : (
-                'Entrar'
-              )}
-            </Button>
-          </form>
-
-          <div className="mt-6 pt-6 border-t">
-            <p className="text-sm text-gray-500 text-center mb-3">
-              Primeiro acesso? Crie dados de demonstração:
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleSeedData}
-              disabled={seeding}
-              className="w-full"
-              data-testid="seed-data-btn"
-            >
-              {seeding ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Criando...
-                </>
-              ) : (
-                'Criar Dados de Demonstração'
-              )}
-            </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
