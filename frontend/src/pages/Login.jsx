@@ -44,31 +44,6 @@ const Login = () => {
     }
   };
 
-  const handleSeedData = async () => {
-    setSeeding(true);
-    setSeedMessage('');
-    try {
-      const response = await seedData();
-      const data = response.data;
-      
-      if (data.already_exists) {
-        setSeedMessage('Dados de demonstração já existem!');
-        toast({ title: 'Dados de demonstração já existem!' });
-      } else {
-        setSeedMessage('Dados criados com sucesso!');
-        toast({ title: 'Dados de demonstração criados!' });
-      }
-      
-      setError('');
-    } catch (err) {
-      const message = err.response?.data?.message || err.response?.data?.detail || 'Erro ao criar dados de demonstração';
-      setSeedMessage(message);
-      toast({ title: 'Erro', description: message, variant: 'destructive' });
-    } finally {
-      setSeeding(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#020617] flex">
       {/* Left Panel - Branding */}
