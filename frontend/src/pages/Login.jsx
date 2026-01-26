@@ -34,12 +34,12 @@ const Login = () => {
 
     try {
       await login(email, password);
-      toast.success('Login realizado com sucesso!');
+      toast({ title: 'Login realizado com sucesso!' });
       navigate('/dashboard');
     } catch (err) {
       const message = err.response?.data?.detail || 'Erro ao fazer login. Verifique suas credenciais.';
       setError(message);
-      toast.error(message);
+      toast({ title: 'Erro', description: message, variant: 'destructive' });
     } finally {
       setLoading(false);
     }
@@ -52,19 +52,20 @@ const Login = () => {
       const data = response.data;
       
       if (data.already_exists) {
-        toast.info('Dados de demonstração já existem!');
+        toast({ title: 'Dados de demonstração já existem!' });
       } else {
-        toast.success('Dados de demonstração criados!');
+        toast({ title: 'Dados de demonstração criados!' });
       }
       
       setError('');
-      // Show demo credentials as separate toasts
-      toast.info('Admin: admin@beeit.com.br / admin123', { duration: 10000 });
-      toast.info('Gestor: gestor@beeit.com.br / gestor123', { duration: 10000 });
-      toast.info('Colaborador: colaborador@beeit.com.br / colab123', { duration: 10000 });
+      // Show demo credentials
+      toast({ 
+        title: 'Credenciais de demonstração',
+        description: 'Admin: admin@beeit.com.br / admin123\nGestor: gestor@beeit.com.br / gestor123\nColaborador: colaborador@beeit.com.br / colab123'
+      });
     } catch (err) {
       const message = err.response?.data?.message || err.response?.data?.detail || 'Erro ao criar dados de demonstração';
-      toast.error(message);
+      toast({ title: 'Erro', description: message, variant: 'destructive' });
     } finally {
       setSeeding(false);
     }
