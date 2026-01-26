@@ -162,7 +162,7 @@ class BeeItFeedbackTester:
         
         success, data = self.make_request('POST', 'teams', team_data, 
                                         admin_token, 201)
-        if success:
+        if success and 'id' in data:
             test_team_id = data['id']
             self.log_test("Create Team", True)
             
