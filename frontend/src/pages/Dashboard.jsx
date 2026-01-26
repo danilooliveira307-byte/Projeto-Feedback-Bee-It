@@ -396,6 +396,7 @@ const Dashboard = () => {
   const { user, isAdmin, isGestor, isColaborador } = useAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
+  const { toast } = useToast();
 
   const fetchDashboardData = async () => {
     setLoading(true);
