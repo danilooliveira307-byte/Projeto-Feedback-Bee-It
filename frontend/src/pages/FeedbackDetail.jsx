@@ -65,10 +65,6 @@ const FeedbackDetail = () => {
     responsavel: 'Colaborador'
   });
 
-  useEffect(() => {
-    fetchData();
-  }, [id]);
-
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -86,6 +82,11 @@ const FeedbackDetail = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const handleAcknowledge = async () => {
     setAcknowledging(true);
