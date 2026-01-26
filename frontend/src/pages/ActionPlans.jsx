@@ -62,10 +62,6 @@ const ActionPlans = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    fetchPlans();
-  }, []);
-
   const fetchPlans = async () => {
     setLoading(true);
     try {
@@ -82,6 +78,11 @@ const ActionPlans = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchPlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDelete = async () => {
     if (!planToDelete) return;
