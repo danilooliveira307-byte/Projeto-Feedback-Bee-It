@@ -41,7 +41,8 @@ import {
   TrendingUp,
   TrendingDown,
   Plus,
-  Lock
+  Lock,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
@@ -130,20 +131,20 @@ const FeedbackDetail = () => {
       case 'Atrasado':
         return <Badge className="status-atrasado">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300">{status}</Badge>;
     }
   };
 
   const getPlanStatusBadge = (status) => {
     switch (status) {
       case 'Concluído':
-        return <Badge className="bg-green-100 text-green-700">Concluído</Badge>;
+        return <Badge className="status-em-dia text-xs">Concluído</Badge>;
       case 'Em andamento':
-        return <Badge className="bg-blue-100 text-blue-700">Em andamento</Badge>;
+        return <Badge className="status-aguardando text-xs">Em andamento</Badge>;
       case 'Atrasado':
-        return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
+        return <Badge className="status-atrasado text-xs">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300 text-xs">{status}</Badge>;
     }
   };
 
@@ -159,7 +160,10 @@ const FeedbackDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+        <div className="flex flex-col items-center gap-4">
+          <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+          <p className="text-slate-400">Carregando feedback...</p>
+        </div>
       </div>
     );
   }
@@ -172,22 +176,27 @@ const FeedbackDetail = () => {
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto" data-testid="feedback-detail-page">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => navigate(-1)}
+            className="text-slate-400 hover:text-white hover:bg-slate-700"
+          >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">
+              <h1 className="text-2xl font-bold text-white">
                 Feedback - {feedback.tipo_feedback}
               </h1>
               {feedback.confidencial && (
-                <Badge variant="outline" className="gap-1">
+                <Badge className="bg-purple-500/20 text-purple-300 border border-purple-500/30 gap-1">
                   <Lock className="h-3 w-3" />
                   Confidencial
                 </Badge>
               )}
             </div>
-            <p className="text-gray-500">
+            <p className="text-slate-400">
               {formatDate(feedback.data_feedback)}
             </p>
           </div>
@@ -197,7 +206,7 @@ const FeedbackDetail = () => {
             <Button
               onClick={handleAcknowledge}
               disabled={acknowledging}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20"
               data-testid="acknowledge-btn"
             >
               <CheckCircle2 className="h-4 w-4 mr-2" />
@@ -208,6 +217,7 @@ const FeedbackDetail = () => {
             <Button
               variant="outline"
               onClick={() => navigate(`/feedbacks/${id}/editar`)}
+              className="bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700"
             >
               <Edit className="h-4 w-4 mr-2" />
               Editar
@@ -217,229 +227,240 @@ const FeedbackDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <User className="h-5 w-5 text-gray-600" />
+        <div className="metric-card rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-slate-800 rounded-lg">
+              <User className="h-5 w-5 text-slate-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Colaborador</p>
-              <p className="font-medium">{feedback.colaborador_nome}</p>
+              <p className="text-sm text-slate-500">Colaborador</p>
+              <p className="font-medium text-white">{feedback.colaborador_nome}</p>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <MessageSquare className="h-5 w-5 text-gray-600" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Gestor</p>
-              <p className="font-medium">{feedback.gestor_nome}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="p-2 bg-gray-100 rounded-lg">
-              <Target className="h-5 w-5 text-gray-600" />
+          </div>
+        </div>
+        <div className="metric-card rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-slate-800 rounded-lg">
+              <MessageSquare className="h-5 w-5 text-slate-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Status</p>
+              <p className="text-sm text-slate-500">Gestor</p>
+              <p className="font-medium text-white">{feedback.gestor_nome}</p>
+            </div>
+          </div>
+        </div>
+        <div className="metric-card rounded-xl p-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-slate-800 rounded-lg">
+              <Target className="h-5 w-5 text-slate-400" />
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Status</p>
               {getStatusBadge(feedback.status_feedback)}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {feedback.ciencia_colaborador && (
-        <Card className="border-l-4 border-l-green-500">
-          <CardContent className="p-4 flex items-center gap-3">
-            <CheckCircle2 className="h-5 w-5 text-green-600" />
+        <div className="glass-card rounded-xl p-4 border-l-4 border-l-emerald-500">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="h-5 w-5 text-emerald-400" />
             <div>
-              <p className="font-medium text-green-700">Ciência Confirmada</p>
-              <p className="text-sm text-gray-500">
+              <p className="font-medium text-emerald-400">Ciência Confirmada</p>
+              <p className="text-sm text-slate-500">
                 em {formatDate(feedback.data_ciencia)}
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Conteúdo do Feedback</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-lg font-semibold text-white">Conteúdo do Feedback</h2>
+        </div>
+        <div className="p-6 space-y-6">
           <div>
-            <h4 className="font-medium text-gray-700 mb-2">Contexto</h4>
-            <p className="text-gray-600 whitespace-pre-wrap">{feedback.contexto}</p>
+            <h4 className="font-medium text-slate-300 mb-2">Contexto</h4>
+            <p className="text-slate-400 whitespace-pre-wrap">{feedback.contexto}</p>
           </div>
           
           {feedback.impacto && (
             <div>
-              <h4 className="font-medium text-gray-700 mb-2">Impacto</h4>
-              <p className="text-gray-600 whitespace-pre-wrap">{feedback.impacto}</p>
+              <h4 className="font-medium text-slate-300 mb-2">Impacto</h4>
+              <p className="text-slate-400 whitespace-pre-wrap">{feedback.impacto}</p>
             </div>
           )}
           
           {feedback.expectativa && (
             <div>
-              <h4 className="font-medium text-gray-700 mb-2">Expectativa</h4>
-              <p className="text-gray-600 whitespace-pre-wrap">{feedback.expectativa}</p>
+              <h4 className="font-medium text-slate-300 mb-2">Expectativa</h4>
+              <p className="text-slate-400 whitespace-pre-wrap">{feedback.expectativa}</p>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2 text-green-700">
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-emerald-500/30">
+            <h3 className="text-lg font-semibold text-emerald-400 flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
               Pontos Fortes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             {feedback.pontos_fortes?.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {feedback.pontos_fortes.map((ponto, index) => (
-                  <Badge key={index} className="bg-green-100 text-green-700">
+                  <Badge key={index} className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     {ponto}
                   </Badge>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">Nenhum ponto forte registrado</p>
+              <p className="text-slate-500 text-sm">Nenhum ponto forte registrado</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2 text-amber-700">
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-amber-500/30">
+            <h3 className="text-lg font-semibold text-amber-400 flex items-center gap-2">
               <TrendingDown className="h-5 w-5" />
               Pontos de Melhoria
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             {feedback.pontos_melhoria?.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {feedback.pontos_melhoria.map((ponto, index) => (
-                  <Badge key={index} className="bg-amber-100 text-amber-700">
+                  <Badge key={index} className="bg-amber-500/20 text-amber-300 border border-amber-500/30">
                     {ponto}
                   </Badge>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">Nenhum ponto de melhoria registrado</p>
+              <p className="text-slate-500 text-sm">Nenhum ponto de melhoria registrado</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {feedback.data_proximo_feedback && (
-        <Card className="border-l-4 border-l-[hsl(30,94%,54%)]">
-          <CardContent className="p-4 flex items-center gap-3">
-            <CalendarIcon className="h-5 w-5 text-[hsl(30,94%,54%)]" />
+        <div className="metric-card-highlight rounded-xl p-6 border-l-4 border-l-[#F59E0B]">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-[#F59E0B]/20">
+              <CalendarIcon className="h-6 w-6 text-[#F59E0B]" />
+            </div>
             <div>
-              <p className="text-sm text-gray-500">Próximo Feedback</p>
-              <p className="font-medium text-[hsl(210,54%,23%)]">
+              <p className="text-sm text-slate-400">Próximo Feedback</p>
+              <p className="font-semibold text-white text-lg">
                 {formatDate(feedback.data_proximo_feedback)}
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <ClipboardList className="h-5 w-5" />
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50 flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <ClipboardList className="h-5 w-5 text-[#F59E0B]" />
             Planos de Ação
-          </CardTitle>
+          </h3>
           {isGestorOrAdmin() && (
             <Button
               size="sm"
               onClick={() => setPlanDialogOpen(true)}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
             >
               <Plus className="h-4 w-4 mr-2" />
               Novo Plano
             </Button>
           )}
-        </CardHeader>
-        <CardContent>
+        </div>
+        <div className="p-6">
           {actionPlans.length > 0 ? (
             <div className="space-y-4">
               {actionPlans.map((plan) => (
                 <div
                   key={plan.id}
-                  className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50 hover:bg-slate-800 transition-colors cursor-pointer"
                   onClick={() => navigate(`/planos-acao/${plan.id}`)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <p className="font-medium text-[hsl(210,54%,23%)]">{plan.objetivo}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-white">{plan.objetivo}</p>
+                      <p className="text-sm text-slate-500">
                         Prazo: {formatDate(plan.prazo_final)} • Responsável: {plan.responsavel}
                       </p>
                     </div>
                     {getPlanStatusBadge(plan.status)}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Progress value={plan.progresso_percentual} className="flex-1 h-2" />
-                    <span className="text-sm font-medium">{plan.progresso_percentual}%</span>
+                    <div className="flex-1 bg-slate-700 rounded-full h-2 overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] rounded-full"
+                        style={{ width: `${plan.progresso_percentual}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-white">{plan.progresso_percentual}%</span>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-slate-500">
               <ClipboardList className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum plano de ação vinculado</p>
               {isGestorOrAdmin() && (
                 <Button
                   variant="link"
                   onClick={() => setPlanDialogOpen(true)}
-                  className="text-[hsl(30,94%,54%)]"
+                  className="text-[#F59E0B]"
                 >
                   Criar plano de ação
                 </Button>
               )}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <Dialog open={planDialogOpen} onOpenChange={setPlanDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-slate-900 border-slate-700">
           <DialogHeader>
-            <DialogTitle>Novo Plano de Ação</DialogTitle>
+            <DialogTitle className="text-white">Novo Plano de Ação</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Objetivo</Label>
+              <Label className="text-slate-300">Objetivo</Label>
               <Textarea
                 placeholder="Descreva o objetivo do plano..."
                 value={newPlan.objetivo}
                 onChange={(e) => setNewPlan(prev => ({ ...prev, objetivo: e.target.value }))}
                 rows={3}
+                className="bg-slate-950 border-slate-700 text-white placeholder:text-slate-500"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Prazo Final</Label>
+                <Label className="text-slate-300">Prazo Final</Label>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-start text-left font-normal">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start text-left font-normal bg-slate-950 border-slate-700 text-white hover:bg-slate-800"
+                    >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {newPlan.prazo_final 
                         ? format(newPlan.prazo_final, "dd/MM/yyyy")
                         : 'Selecione'}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
+                  <PopoverContent className="w-auto p-0 bg-slate-900 border-slate-700" align="start">
                     <Calendar
                       mode="single"
                       selected={newPlan.prazo_final}
@@ -451,15 +472,15 @@ const FeedbackDetail = () => {
                 </Popover>
               </div>
               <div className="space-y-2">
-                <Label>Responsável</Label>
+                <Label className="text-slate-300">Responsável</Label>
                 <Select
                   value={newPlan.responsavel}
                   onValueChange={(v) => setNewPlan(prev => ({ ...prev, responsavel: v }))}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-slate-950 border-slate-700 text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900 border-slate-700">
                     <SelectItem value="Colaborador">Colaborador</SelectItem>
                     <SelectItem value="Gestor">Gestor</SelectItem>
                     <SelectItem value="Ambos">Ambos</SelectItem>
@@ -469,12 +490,16 @@ const FeedbackDetail = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setPlanDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setPlanDialogOpen(false)}
+              className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
+            >
               Cancelar
             </Button>
             <Button
               onClick={handleCreatePlan}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
             >
               Criar Plano
             </Button>

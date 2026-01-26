@@ -40,7 +40,8 @@ import {
   Calendar,
   User,
   Target,
-  ClipboardCheck
+  ClipboardCheck,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
@@ -148,26 +149,26 @@ const ActionPlanDetail = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Concluído':
-        return <Badge className="bg-green-100 text-green-700">Concluído</Badge>;
+        return <Badge className="status-em-dia">Concluído</Badge>;
       case 'Em andamento':
-        return <Badge className="bg-blue-100 text-blue-700">Em andamento</Badge>;
+        return <Badge className="status-aguardando">Em andamento</Badge>;
       case 'Atrasado':
-        return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
+        return <Badge className="status-atrasado">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300">{status}</Badge>;
     }
   };
 
   const getProgressBadge = (progresso) => {
     switch (progresso) {
       case 'Bom':
-        return <Badge className="bg-green-100 text-green-700">Bom</Badge>;
+        return <Badge className="status-em-dia">Bom</Badge>;
       case 'Regular':
-        return <Badge className="bg-yellow-100 text-yellow-700">Regular</Badge>;
+        return <Badge className="status-pending">Regular</Badge>;
       case 'Ruim':
-        return <Badge className="bg-red-100 text-red-700">Ruim</Badge>;
+        return <Badge className="status-atrasado">Ruim</Badge>;
       default:
-        return <Badge variant="secondary">{progresso}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300">{progresso}</Badge>;
     }
   };
 
@@ -192,7 +193,10 @@ const ActionPlanDetail = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+        <div className="flex flex-col items-center gap-4">
+          <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+          <p className="text-slate-400">Carregando plano...</p>
+        </div>
       </div>
     );
   }
@@ -204,19 +208,24 @@ const ActionPlanDetail = () => {
   return (
     <div className="space-y-6 animate-fade-in max-w-4xl mx-auto" data-testid="action-plan-detail">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate(-1)}
+          className="text-slate-400 hover:text-white hover:bg-slate-700"
+        >
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Plano de Ação</h1>
+            <h1 className="text-2xl font-bold text-white">Plano de Ação</h1>
             {getStatusBadge(plan.status)}
           </div>
-          <p className="text-gray-500">Prazo: {formatDate(plan.prazo_final)}</p>
+          <p className="text-slate-400">Prazo: {formatDate(plan.prazo_final)}</p>
         </div>
         <Button
           onClick={() => setCheckinDialogOpen(true)}
-          className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+          className="bg-[#F59E0B] hover:bg-[#D97706] text-white font-semibold shadow-lg shadow-orange-500/20"
           data-testid="new-checkin-btn"
         >
           <MessageSquare className="h-4 w-4 mr-2" />
@@ -224,16 +233,16 @@ const ActionPlanDetail = () => {
         </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Target className="h-5 w-5" />
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <Target className="h-5 w-5 text-[#F59E0B]" />
             Objetivo
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-gray-700">{plan.objetivo}</p>
-          <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
+          </h2>
+        </div>
+        <div className="p-6">
+          <p className="text-slate-300">{plan.objetivo}</p>
+          <div className="flex items-center gap-4 mt-4 text-sm text-slate-400">
             <span className="flex items-center gap-1">
               <User className="h-4 w-4" />
               Responsável: {plan.responsavel}
@@ -243,54 +252,63 @@ const ActionPlanDetail = () => {
               Prazo: {formatDate(plan.prazo_final)}
             </span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-medium">Progresso Geral</span>
-            <span className="text-2xl font-bold text-[hsl(30,94%,54%)]">
-              {plan.progresso_percentual}%
-            </span>
-          </div>
-          <Progress value={plan.progresso_percentual} className="h-3" />
-          <p className="text-sm text-gray-500 mt-2">
-            {items.filter(i => i.concluido).length} de {items.length} itens concluídos
-          </p>
-        </CardContent>
-      </Card>
+      <div className="metric-card-highlight rounded-xl p-6">
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-medium text-slate-300">Progresso Geral</span>
+          <span className="text-2xl font-bold text-[#F59E0B]">
+            {plan.progresso_percentual}%
+          </span>
+        </div>
+        <div className="bg-slate-800 rounded-full h-3 overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] rounded-full transition-all"
+            style={{ width: `${plan.progresso_percentual}%` }}
+          />
+        </div>
+        <p className="text-sm text-slate-500 mt-2">
+          {items.filter(i => i.concluido).length} de {items.length} itens concluídos
+        </p>
+      </div>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <ClipboardCheck className="h-5 w-5" />
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <ClipboardCheck className="h-5 w-5 text-[#F59E0B]" />
             Itens do Plano
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </h2>
+        </div>
+        <div className="p-6 space-y-4">
           <div className="flex gap-2">
             <Input
               placeholder="Adicionar novo item..."
               value={newItemText}
               onChange={(e) => setNewItemText(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleAddItem()}
+              className="bg-slate-900 border-slate-700 text-white placeholder:text-slate-500"
               data-testid="new-item-input"
             />
-            <Button onClick={handleAddItem} className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]">
+            <Button 
+              onClick={handleAddItem} 
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
+            >
               <Plus className="h-4 w-4" />
             </Button>
           </div>
 
           <div className="space-y-2">
             {items.length === 0 ? (
-              <p className="text-center text-gray-500 py-4">Nenhum item cadastrado</p>
+              <p className="text-center text-slate-500 py-4">Nenhum item cadastrado</p>
             ) : (
               items.map((item) => (
                 <div
                   key={item.id}
                   className={`flex items-center gap-3 p-3 rounded-lg border ${
-                    item.concluido ? 'bg-green-50 border-green-200' : 'bg-white'
+                    item.concluido 
+                      ? 'bg-emerald-500/10 border-emerald-500/30' 
+                      : 'bg-slate-800/50 border-slate-700/50'
                   }`}
                   data-testid={`item-${item.id}`}
                 >
@@ -298,11 +316,11 @@ const ActionPlanDetail = () => {
                     checked={item.concluido}
                     onCheckedChange={() => handleToggleItem(item)}
                   />
-                  <span className={`flex-1 ${item.concluido ? 'line-through text-gray-500' : ''}`}>
+                  <span className={`flex-1 ${item.concluido ? 'line-through text-slate-500' : 'text-slate-300'}`}>
                     {item.descricao}
                   </span>
                   {item.prazo_item && (
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-slate-500">
                       {formatDate(item.prazo_item)}
                     </span>
                   )}
@@ -310,7 +328,7 @@ const ActionPlanDetail = () => {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDeleteItem(item.id)}
-                    className="h-8 w-8 text-gray-400 hover:text-red-600"
+                    className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-500/10"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -318,25 +336,25 @@ const ActionPlanDetail = () => {
               ))
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-[#F59E0B]" />
             Histórico de Check-ins
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h2>
+        </div>
+        <div className="p-6">
           {checkins.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-slate-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum check-in registrado</p>
               <Button
                 variant="link"
                 onClick={() => setCheckinDialogOpen(true)}
-                className="text-[hsl(30,94%,54%)]"
+                className="text-[#F59E0B]"
               >
                 Registrar primeiro check-in
               </Button>
@@ -344,40 +362,40 @@ const ActionPlanDetail = () => {
           ) : (
             <div className="space-y-4">
               {checkins.map((checkin) => (
-                <div key={checkin.id} className="p-4 bg-gray-50 rounded-lg">
+                <div key={checkin.id} className="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">{checkin.registrado_por_nome}</span>
+                      <span className="font-medium text-white">{checkin.registrado_por_nome}</span>
                       {getProgressBadge(checkin.progresso)}
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-slate-500">
                       {formatDateTime(checkin.data_checkin)}
                     </span>
                   </div>
-                  <p className="text-gray-600">{checkin.comentario}</p>
+                  <p className="text-slate-300">{checkin.comentario}</p>
                 </div>
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <Dialog open={checkinDialogOpen} onOpenChange={setCheckinDialogOpen}>
-        <DialogContent>
+        <DialogContent className="bg-slate-900 border-slate-700">
           <DialogHeader>
-            <DialogTitle>Novo Check-in</DialogTitle>
+            <DialogTitle className="text-white">Novo Check-in</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Avaliação do Progresso</Label>
+              <Label className="text-slate-300">Avaliação do Progresso</Label>
               <Select
                 value={newCheckin.progresso}
                 onValueChange={(v) => setNewCheckin(prev => ({ ...prev, progresso: v }))}
               >
-                <SelectTrigger data-testid="checkin-progress-select">
+                <SelectTrigger className="bg-slate-950 border-slate-700 text-white" data-testid="checkin-progress-select">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-900 border-slate-700">
                   {PROGRESS_OPTIONS.map(p => (
                     <SelectItem key={p} value={p}>{p}</SelectItem>
                   ))}
@@ -385,23 +403,28 @@ const ActionPlanDetail = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Comentário</Label>
+              <Label className="text-slate-300">Comentário</Label>
               <Textarea
                 placeholder="Descreva o progresso e observações..."
                 value={newCheckin.comentario}
                 onChange={(e) => setNewCheckin(prev => ({ ...prev, comentario: e.target.value }))}
                 rows={4}
+                className="bg-slate-950 border-slate-700 text-white placeholder:text-slate-500"
                 data-testid="checkin-comment-input"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setCheckinDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setCheckinDialogOpen(false)}
+              className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
+            >
               Cancelar
             </Button>
             <Button
               onClick={handleCreateCheckin}
-              className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
               data-testid="save-checkin-btn"
             >
               Registrar Check-in

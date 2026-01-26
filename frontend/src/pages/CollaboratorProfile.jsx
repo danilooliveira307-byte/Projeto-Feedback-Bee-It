@@ -16,7 +16,8 @@ import {
   TrendingDown,
   MessageSquare,
   ClipboardList,
-  Eye
+  Eye,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
@@ -51,26 +52,26 @@ const CollaboratorProfile = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Em dia':
-        return <Badge className="status-em-dia">Em dia</Badge>;
+        return <Badge className="status-em-dia text-xs">Em dia</Badge>;
       case 'Aguardando ciência':
-        return <Badge className="status-aguardando">Aguardando ciência</Badge>;
+        return <Badge className="status-aguardando text-xs">Aguardando ciência</Badge>;
       case 'Atrasado':
-        return <Badge className="status-atrasado">Atrasado</Badge>;
+        return <Badge className="status-atrasado text-xs">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300 text-xs">{status}</Badge>;
     }
   };
 
   const getPlanStatusBadge = (status) => {
     switch (status) {
       case 'Concluído':
-        return <Badge className="bg-green-100 text-green-700">Concluído</Badge>;
+        return <Badge className="status-em-dia text-xs">Concluído</Badge>;
       case 'Em andamento':
-        return <Badge className="bg-blue-100 text-blue-700">Em andamento</Badge>;
+        return <Badge className="status-aguardando text-xs">Em andamento</Badge>;
       case 'Atrasado':
-        return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
+        return <Badge className="status-atrasado text-xs">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300 text-xs">{status}</Badge>;
     }
   };
 
@@ -86,7 +87,10 @@ const CollaboratorProfile = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+        <div className="flex flex-col items-center gap-4">
+          <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+          <p className="text-slate-400">Carregando perfil...</p>
+        </div>
       </div>
     );
   }
@@ -100,121 +104,126 @@ const CollaboratorProfile = () => {
   return (
     <div className="space-y-6 animate-fade-in" data-testid="collaborator-profile">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => navigate(-1)}
+          className="text-slate-400 hover:text-white hover:bg-slate-700"
+        >
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Perfil do Colaborador</h1>
-          <p className="text-gray-500">Histórico e desenvolvimento</p>
+          <h1 className="text-2xl font-bold text-white">Perfil do Colaborador</h1>
+          <p className="text-slate-400">Histórico e desenvolvimento</p>
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-start gap-6">
-            <div className="h-20 w-20 rounded-full bg-[hsl(210,54%,23%)] flex items-center justify-center text-white text-3xl font-bold">
-              {colaborador.nome?.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-[hsl(210,54%,23%)]">{colaborador.nome}</h2>
-              <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-600">
+      <div className="glass-card rounded-xl p-6">
+        <div className="flex items-start gap-6">
+          <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#F59E0B] to-[#D97706] flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-orange-500/20">
+            {colaborador.nome?.charAt(0).toUpperCase()}
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-white">{colaborador.nome}</h2>
+            <div className="flex flex-wrap gap-4 mt-2 text-sm text-slate-400">
+              <span className="flex items-center gap-1">
+                <Mail className="h-4 w-4" />
+                {colaborador.email}
+              </span>
+              {time && (
                 <span className="flex items-center gap-1">
-                  <Mail className="h-4 w-4" />
-                  {colaborador.email}
+                  <Building2 className="h-4 w-4" />
+                  {time.nome}
                 </span>
-                {time && (
-                  <span className="flex items-center gap-1">
-                    <Building2 className="h-4 w-4" />
-                    {time.nome}
-                  </span>
-                )}
-                {gestor && (
-                  <span className="flex items-center gap-1">
-                    <User className="h-4 w-4" />
-                    Gestor: {gestor.nome}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold text-[hsl(30,94%,54%)]">{total_feedbacks}</p>
-              <p className="text-sm text-gray-500">feedbacks recebidos</p>
+              )}
+              {gestor && (
+                <span className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  Gestor: {gestor.nome}
+                </span>
+              )}
             </div>
           </div>
-        </CardContent>
-      </Card>
+          <div className="text-right">
+            <p className="text-3xl font-bold text-[#F59E0B]">{total_feedbacks}</p>
+            <p className="text-sm text-slate-500">feedbacks recebidos</p>
+          </div>
+        </div>
+      </div>
 
       {proximo_feedback && (
-        <Card className="border-l-4 border-l-[hsl(30,94%,54%)]">
-          <CardContent className="p-4 flex items-center gap-3">
-            <Calendar className="h-5 w-5 text-[hsl(30,94%,54%)]" />
-            <div>
-              <p className="text-sm text-gray-500">Próximo Feedback</p>
-              <p className="font-semibold text-[hsl(210,54%,23%)]">{formatDate(proximo_feedback)}</p>
+        <div className="metric-card-highlight rounded-xl p-6 border-l-4 border-l-[#F59E0B]">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-[#F59E0B]/20">
+              <Calendar className="h-6 w-6 text-[#F59E0B]" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-sm text-slate-400">Próximo Feedback</p>
+              <p className="font-semibold text-white text-lg">{formatDate(proximo_feedback)}</p>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2 text-green-700">
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-emerald-500/30">
+            <h3 className="text-lg font-semibold text-emerald-400 flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
               Pontos Fortes Recorrentes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             {pontos_fortes_recorrentes?.length > 0 ? (
               <div className="space-y-3">
                 {pontos_fortes_recorrentes.map(([ponto, count], index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-gray-700">{ponto}</span>
-                    <Badge className="bg-green-100 text-green-700">{count}x</Badge>
+                    <span className="text-slate-300">{ponto}</span>
+                    <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">{count}x</Badge>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">Nenhum ponto forte identificado</p>
+              <p className="text-slate-500 text-sm">Nenhum ponto forte identificado</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2 text-amber-700">
+        <div className="glass-card rounded-xl overflow-hidden">
+          <div className="p-6 border-b border-amber-500/30">
+            <h3 className="text-lg font-semibold text-amber-400 flex items-center gap-2">
               <TrendingDown className="h-5 w-5" />
               Pontos de Melhoria Recorrentes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+            </h3>
+          </div>
+          <div className="p-6">
             {pontos_melhoria_recorrentes?.length > 0 ? (
               <div className="space-y-3">
                 {pontos_melhoria_recorrentes.map(([ponto, count], index) => (
                   <div key={index} className="flex items-center justify-between">
-                    <span className="text-gray-700">{ponto}</span>
-                    <Badge className="bg-amber-100 text-amber-700">{count}x</Badge>
+                    <span className="text-slate-300">{ponto}</span>
+                    <Badge className="bg-amber-500/20 text-amber-300 border border-amber-500/30">{count}x</Badge>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-sm">Nenhum ponto de melhoria identificado</p>
+              <p className="text-slate-500 text-sm">Nenhum ponto de melhoria identificado</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MessageSquare className="h-5 w-5" />
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-[#F59E0B]" />
             Timeline de Feedbacks
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="p-6">
           {feedbacks?.length > 0 ? (
             <div className="relative">
-              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[hsl(30,94%,54%)] to-[hsl(210,54%,30%)]"></div>
+              <div className="timeline-line"></div>
               
               <div className="space-y-6">
                 {feedbacks.map((feedback, index) => (
@@ -223,97 +232,98 @@ const CollaboratorProfile = () => {
                     className="relative pl-12 animate-slide-in"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <div className="absolute left-0 w-8 h-8 rounded-full bg-[hsl(30,94%,54%)] flex items-center justify-center">
-                      <MessageSquare className="h-4 w-4 text-white" />
-                    </div>
+                    <div className="timeline-dot"></div>
                     
-                    <Card
-                      className="card-hover cursor-pointer"
+                    <div
+                      className="glass-card rounded-xl p-4 card-hover cursor-pointer"
                       onClick={() => navigate(`/feedbacks/${feedback.id}`)}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium text-[hsl(210,54%,23%)]">
-                                {feedback.tipo_feedback}
-                              </span>
-                              {getStatusBadge(feedback.status_feedback)}
-                            </div>
-                            <p className="text-sm text-gray-500">
-                              por {feedback.gestor_nome} • {formatDate(feedback.data_feedback)}
-                            </p>
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-white">
+                              {feedback.tipo_feedback}
+                            </span>
+                            {getStatusBadge(feedback.status_feedback)}
                           </div>
-                          <Button variant="ghost" size="icon">
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          <p className="text-sm text-slate-500">
+                            por {feedback.gestor_nome} • {formatDate(feedback.data_feedback)}
+                          </p>
                         </div>
-                        <p className="text-sm text-gray-600 line-clamp-2">{feedback.contexto}</p>
-                        {(feedback.pontos_fortes?.length > 0 || feedback.pontos_melhoria?.length > 0) && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {feedback.pontos_fortes?.slice(0, 2).map((p, i) => (
-                              <Badge key={i} className="bg-green-100 text-green-700 text-xs">{p}</Badge>
-                            ))}
-                            {feedback.pontos_melhoria?.slice(0, 2).map((p, i) => (
-                              <Badge key={i} className="bg-amber-100 text-amber-700 text-xs">{p}</Badge>
-                            ))}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
+                        <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="text-sm text-slate-400 line-clamp-2">{feedback.contexto}</p>
+                      {(feedback.pontos_fortes?.length > 0 || feedback.pontos_melhoria?.length > 0) && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {feedback.pontos_fortes?.slice(0, 2).map((p, i) => (
+                            <Badge key={i} className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs">{p}</Badge>
+                          ))}
+                          {feedback.pontos_melhoria?.slice(0, 2).map((p, i) => (
+                            <Badge key={i} className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs">{p}</Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-slate-500">
               <MessageSquare className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum feedback registrado</p>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <ClipboardList className="h-5 w-5" />
+      <div className="glass-card rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700/50">
+          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <ClipboardList className="h-5 w-5 text-[#F59E0B]" />
             Planos de Ação
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="p-6">
           {planos_acao?.length > 0 ? (
             <div className="space-y-4">
               {planos_acao.map((plan) => (
                 <div
                   key={plan.id}
-                  className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                  className="p-4 bg-slate-800/50 rounded-lg border border-slate-700/50 hover:bg-slate-800 transition-colors cursor-pointer"
                   onClick={() => navigate(`/planos-acao/${plan.id}`)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <p className="font-medium text-[hsl(210,54%,23%)]">{plan.objetivo}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-white">{plan.objetivo}</p>
+                      <p className="text-sm text-slate-500">
                         Prazo: {formatDate(plan.prazo_final)} • Responsável: {plan.responsavel}
                       </p>
                     </div>
                     {getPlanStatusBadge(plan.status)}
                   </div>
                   <div className="flex items-center gap-2">
-                    <Progress value={plan.progresso_percentual} className="flex-1 h-2" />
-                    <span className="text-sm font-medium">{plan.progresso_percentual}%</span>
+                    <div className="flex-1 bg-slate-700 rounded-full h-2 overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] rounded-full"
+                        style={{ width: `${plan.progresso_percentual}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-white">{plan.progresso_percentual}%</span>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-slate-500">
               <ClipboardList className="h-12 w-12 mx-auto mb-2 opacity-50" />
               <p>Nenhum plano de ação vinculado</p>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

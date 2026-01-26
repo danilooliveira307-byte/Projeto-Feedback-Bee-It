@@ -35,7 +35,8 @@ import {
   Eye,
   Trash2,
   ClipboardList,
-  X
+  X,
+  Hexagon
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { format, parseISO } from 'date-fns';
@@ -99,13 +100,13 @@ const ActionPlans = () => {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Concluído':
-        return <Badge className="bg-green-100 text-green-700">Concluído</Badge>;
+        return <Badge className="status-em-dia text-xs">Concluído</Badge>;
       case 'Em andamento':
-        return <Badge className="bg-blue-100 text-blue-700">Em andamento</Badge>;
+        return <Badge className="status-aguardando text-xs">Em andamento</Badge>;
       case 'Atrasado':
-        return <Badge className="bg-red-100 text-red-700">Atrasado</Badge>;
+        return <Badge className="status-atrasado text-xs">Atrasado</Badge>;
       default:
-        return <Badge variant="secondary">{status}</Badge>;
+        return <Badge className="bg-slate-700 text-slate-300 text-xs">{status}</Badge>;
     }
   };
 
@@ -122,15 +123,15 @@ const ActionPlans = () => {
     <div className="space-y-6 animate-fade-in" data-testid="action-plans-page">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[hsl(210,54%,23%)]">Planos de Ação</h1>
-          <p className="text-gray-500">
+          <h1 className="text-3xl font-bold text-white">Planos de Ação</h1>
+          <p className="text-slate-400 mt-1">
             {plans.length} plano{plans.length !== 1 ? 's' : ''} encontrado{plans.length !== 1 ? 's' : ''}
           </p>
         </div>
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
-          className={showFilters ? 'bg-gray-100' : ''}
+          className={`bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700 ${showFilters ? 'bg-slate-700' : ''}`}
         >
           <Filter className="h-4 w-4 mr-2" />
           Filtros
@@ -138,102 +139,107 @@ const ActionPlans = () => {
       </div>
 
       {showFilters && (
-        <Card className="animate-fade-in">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Status</label>
-                <Select
-                  value={filters.status}
-                  onValueChange={(v) => setFilters(prev => ({ ...prev, status: v }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    {ACTION_PLAN_STATUS.map(s => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Responsável</label>
-                <Select
-                  value={filters.responsavel}
-                  onValueChange={(v) => setFilters(prev => ({ ...prev, responsavel: v }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos</SelectItem>
-                    {RESPONSIBLE_TYPES.map(r => (
-                      <SelectItem key={r} value={r}>{r}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        <div className="glass-card rounded-xl p-6 animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">Status</label>
+              <Select
+                value={filters.status}
+                onValueChange={(v) => setFilters(prev => ({ ...prev, status: v }))}
+              >
+                <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectItem value="all">Todos</SelectItem>
+                  {ACTION_PLAN_STATUS.map(s => (
+                    <SelectItem key={s} value={s}>{s}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="flex justify-end gap-2 mt-4 pt-4 border-t">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFilters({ status: '', responsavel: '' });
-                  setTimeout(fetchPlans, 0);
-                }}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">Responsável</label>
+              <Select
+                value={filters.responsavel}
+                onValueChange={(v) => setFilters(prev => ({ ...prev, responsavel: v }))}
               >
-                <X className="h-4 w-4 mr-2" />
-                Limpar
-              </Button>
-              <Button
-                onClick={fetchPlans}
-                className="bg-[hsl(30,94%,54%)] hover:bg-[hsl(30,94%,45%)]"
-              >
-                Aplicar Filtros
-              </Button>
+                <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-slate-700">
+                  <SelectItem value="all">Todos</SelectItem>
+                  {RESPONSIBLE_TYPES.map(r => (
+                    <SelectItem key={r} value={r}>{r}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6 pt-4 border-t border-slate-700/50">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setFilters({ status: '', responsavel: '' });
+                setTimeout(fetchPlans, 0);
+              }}
+              className="bg-slate-800/50 border-slate-700 text-slate-300 hover:text-white hover:bg-slate-700"
+            >
+              <X className="h-4 w-4 mr-2" />
+              Limpar
+            </Button>
+            <Button
+              onClick={fetchPlans}
+              className="bg-[#F59E0B] hover:bg-[#D97706] text-white"
+            >
+              Aplicar Filtros
+            </Button>
+          </div>
+        </div>
       )}
 
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(30,94%,54%)]"></div>
+          <div className="flex flex-col items-center gap-4">
+            <Hexagon className="h-12 w-12 text-[#F59E0B] animate-pulse" />
+            <p className="text-slate-400">Carregando planos...</p>
+          </div>
         </div>
       ) : plans.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center h-64 text-gray-500">
+        <div className="glass-card rounded-xl">
+          <div className="flex flex-col items-center justify-center h-64 text-slate-500">
             <ClipboardList className="h-12 w-12 mb-2 opacity-50" />
             <p>Nenhum plano de ação encontrado</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {plans.map((plan) => (
-            <Card
+            <div
               key={plan.id}
-              className="card-hover cursor-pointer"
+              className="glass-card rounded-xl card-hover cursor-pointer overflow-hidden"
               onClick={() => navigate(`/planos-acao/${plan.id}`)}
               data-testid={`plan-card-${plan.id}`}
             >
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <CardTitle className="text-base line-clamp-2">{plan.objetivo}</CardTitle>
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-base font-semibold text-white line-clamp-2">{plan.objetivo}</h3>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-700">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/planos-acao/${plan.id}`);
-                      }}>
+                    <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
+                      <DropdownMenuItem 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/planos-acao/${plan.id}`);
+                        }}
+                        className="text-slate-300 hover:text-white hover:bg-slate-700"
+                      >
                         <Eye className="h-4 w-4 mr-2" />
                         Visualizar
                       </DropdownMenuItem>
@@ -244,7 +250,7 @@ const ActionPlans = () => {
                             setPlanToDelete(plan.id);
                             setDeleteDialogOpen(true);
                           }}
-                          className="text-red-600"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Excluir
@@ -253,44 +259,50 @@ const ActionPlans = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-              </CardHeader>
-              <CardContent>
+                
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">Prazo: {formatDate(plan.prazo_final)}</span>
+                    <span className="text-slate-400">Prazo: {formatDate(plan.prazo_final)}</span>
                     {getStatusBadge(plan.status)}
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Progress value={plan.progresso_percentual} className="flex-1 h-2" />
-                    <span className="text-sm font-medium w-10 text-right">
+                    <div className="flex-1 bg-slate-800 rounded-full h-2 overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] rounded-full transition-all"
+                        style={{ width: `${plan.progresso_percentual}%` }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium text-white w-10 text-right">
                       {plan.progresso_percentual}%
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>Responsável: {plan.responsavel}</span>
+                  <div className="text-xs text-slate-500">
+                    Responsável: {plan.responsavel}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-slate-900 border-slate-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-white">Confirmar exclusão</AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-400">
               Esta ação não pode ser desfeita. O plano de ação e todos os itens relacionados serão removidos.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white">
+              Cancelar
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 text-white"
             >
               Excluir
             </AlertDialogAction>
