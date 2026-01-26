@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { seedData } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Loader2, Mail, Lock, AlertCircle, Database, ArrowRight } from 'lucide-react';
+import { Loader2, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
 const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/g76gq8ss_Usar_em_Fundo_Azul.png';
@@ -15,8 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [seeding, setSeeding] = useState(false);
-  const [seedMessage, setSeedMessage] = useState('');
   const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
