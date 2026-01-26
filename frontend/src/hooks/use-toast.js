@@ -43,15 +43,16 @@ export const ToastProvider = ({ children }) => {
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`p-4 rounded-lg shadow-lg border animate-fade-in ${
+            className={`p-4 rounded-xl shadow-2xl border animate-fade-in backdrop-blur-sm cursor-pointer transition-all hover:scale-[1.02] ${
               t.variant === 'destructive'
-                ? 'bg-red-50 border-red-200 text-red-800'
-                : 'bg-white border-gray-200 text-gray-800'
+                ? 'bg-red-500/20 border-red-500/30 text-red-300'
+                : 'bg-slate-800/90 border-slate-700/50 text-white'
             }`}
             onClick={() => dismissToast(t.id)}
+            data-testid="toast-message"
           >
             {t.title && (
-              <p className="font-medium text-sm">{t.title}</p>
+              <p className="font-semibold text-sm">{t.title}</p>
             )}
             {t.description && (
               <p className="text-sm mt-1 opacity-80 whitespace-pre-line">{t.description}</p>
