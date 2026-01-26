@@ -154,15 +154,15 @@ const Users = () => {
       if (editingUser) {
         const updateData = { ...formData };
         if (!updateData.password) delete updateData.password;
-        if (!updateData.time_id) updateData.time_id = null;
-        if (!updateData.gestor_direto_id) updateData.gestor_direto_id = null;
+        if (!updateData.time_id || updateData.time_id === 'none') updateData.time_id = null;
+        if (!updateData.gestor_direto_id || updateData.gestor_direto_id === 'none') updateData.gestor_direto_id = null;
         
         await updateUser(editingUser.id, updateData);
         toast({ title: 'Usuário atualizado!' });
       } else {
         const createData = { ...formData };
-        if (!createData.time_id) delete createData.time_id;
-        if (!createData.gestor_direto_id) delete createData.gestor_direto_id;
+        if (!createData.time_id || createData.time_id === 'none') delete createData.time_id;
+        if (!createData.gestor_direto_id || createData.gestor_direto_id === 'none') delete createData.gestor_direto_id;
         
         await createUser(createData);
         toast({ title: 'Usuário criado!' });
