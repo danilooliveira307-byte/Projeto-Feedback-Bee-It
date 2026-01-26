@@ -8,7 +8,7 @@ import { Label } from '../components/ui/label';
 import { Loader2, Mail, Lock, AlertCircle, Database, ArrowRight } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
-const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/i4773jcn_Logo%20BEE%20IT%20Original.png';
+const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/g76gq8ss_Usar_em_Fundo_Azul.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');

@@ -26,7 +26,7 @@ import {
   Search
 } from 'lucide-react';
 
-const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/i4773jcn_Logo%20BEE%20IT%20Original.png';
+const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/g76gq8ss_Usar_em_Fundo_Azul.png';
 
 const Layout = ({ children }) => {
   const { user, logout, isAdmin, isGestor, isColaborador } = useAuth();
