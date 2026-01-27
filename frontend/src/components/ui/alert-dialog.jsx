@@ -21,27 +21,8 @@ const AlertDialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
 ))
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName
 
-// Safe Portal wrapper to prevent removeChild errors
-const SafeAlertDialogPortal = ({ children }) => {
-  const [canRender, setCanRender] = React.useState(false)
-  
-  React.useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setCanRender(true)
-    })
-    return () => {
-      cancelAnimationFrame(frame)
-      setCanRender(false)
-    }
-  }, [])
-
-  if (!canRender) return null
-  
-  return <AlertDialogPrimitive.Portal>{children}</AlertDialogPrimitive.Portal>
-}
-
 const AlertDialogContent = React.forwardRef(({ className, ...props }, ref) => (
-  <SafeAlertDialogPortal>
+  <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
@@ -50,7 +31,7 @@ const AlertDialogContent = React.forwardRef(({ className, ...props }, ref) => (
         className
       )}
       {...props} />
-  </SafeAlertDialogPortal>
+  </AlertDialogPortal>
 ))
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName
 
