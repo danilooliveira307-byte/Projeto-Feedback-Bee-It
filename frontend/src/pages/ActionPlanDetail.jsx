@@ -402,7 +402,9 @@ const ActionPlanDetail = () => {
                 onValueChange={(v) => setNewCheckin(prev => ({ ...prev, progresso: v }))}
               >
                 <SelectTrigger className="bg-slate-950 border-slate-700 text-white" data-testid="checkin-progress-select">
-                  <SelectValue />
+                  <span className="truncate">
+                    {newCheckin.progresso || "Selecione"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   {PROGRESS_OPTIONS.map(p => (
