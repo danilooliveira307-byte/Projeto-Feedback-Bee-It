@@ -77,14 +77,15 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 - ✅ Toasts com tema dark
 
 ### Credenciais de Demonstração
-- **Admin**: admin@beeit.com.br / admin123
-- **Gestor**: gestor@beeit.com.br / gestor123
-- **Colaborador**: colaborador@beeit.com.br / colab123
+- **Admin**: danilo.oliveira@beeitpartner.com.br / admin123
+- **Gestor**: milcio.gutierrez@beeitpartner.com.br / gestor123
+- **Colaborador**: cristopher.pinho@beeitpartner.com.br / colaborador123
 
 ## Backlog Priorizado
 
 ### P0 (Crítico) - ✅ CONCLUÍDO
 Todas as funcionalidades core estão implementadas e testadas.
+Todos os bugs conhecidos foram corrigidos.
 
 ### P1 (Alta Prioridade) - Próximos passos
 - [ ] Notificações por email (SendGrid/Resend)
