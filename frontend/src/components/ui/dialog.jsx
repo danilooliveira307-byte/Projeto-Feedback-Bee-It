@@ -23,27 +23,8 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
-// Safe Portal wrapper to prevent removeChild errors
-const SafeDialogPortal = ({ children }) => {
-  const [canRender, setCanRender] = React.useState(false)
-  
-  React.useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setCanRender(true)
-    })
-    return () => {
-      cancelAnimationFrame(frame)
-      setCanRender(false)
-    }
-  }, [])
-
-  if (!canRender) return null
-  
-  return <DialogPrimitive.Portal>{children}</DialogPrimitive.Portal>
-}
-
 const DialogContent = React.forwardRef(({ className, children, ...props }, ref) => (
-  <SafeDialogPortal>
+  <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -59,7 +40,7 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
-  </SafeDialogPortal>
+  </DialogPortal>
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
