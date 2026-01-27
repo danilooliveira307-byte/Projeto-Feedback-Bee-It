@@ -25,6 +25,11 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
   - Solução: Removido StrictMode, eliminado React Fragments dentro de componentes Radix, adicionado keys estáveis
 - ✅ **Sistema de Toast**: Migrado para Sonner (biblioteca recomendada pelo Shadcn/UI)
 - ✅ **Downgrade Radix UI**: Versões estáveis compatíveis com React 18
+- ✅ **Restrição Colaborador**: Colaboradores não podem excluir itens de planos de ação (apenas adicionar)
+- ✅ **Notificações por E-mail**: Integração com SendGrid implementada
+  - Novo feedback criado → notifica colaborador
+  - Feedback atrasado → notifica gestor
+  - Prazo de plano de ação próximo → notifica responsável
 
 ### Features Implementadas
 
