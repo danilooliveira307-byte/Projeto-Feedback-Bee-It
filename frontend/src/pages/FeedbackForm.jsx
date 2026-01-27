@@ -252,7 +252,11 @@ const FeedbackForm = () => {
                   disabled={isEditing}
                 >
                   <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="select-colaborador">
-                    <SelectValue placeholder="Selecione o colaborador" />
+                    <span className="truncate">
+                      {formData.colaborador_id 
+                        ? users.find(u => u.id === formData.colaborador_id)?.nome || "Selecione o colaborador"
+                        : "Selecione o colaborador"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
                     {users.map(u => (
@@ -269,7 +273,9 @@ const FeedbackForm = () => {
                   onValueChange={(v) => setFormData(prev => ({ ...prev, tipo_feedback: v }))}
                 >
                   <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="select-tipo">
-                    <SelectValue placeholder="Selecione o tipo" />
+                    <span className="truncate">
+                      {formData.tipo_feedback || "Selecione o tipo"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
                     {FEEDBACK_TYPES.map(t => (
