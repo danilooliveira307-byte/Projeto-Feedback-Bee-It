@@ -207,12 +207,12 @@ const Layout = ({ children }) => {
                   <p className="font-medium text-white">{user?.nome}</p>
                   <p className="text-sm text-slate-400">{user?.email}</p>
                 </div>
-                <DropdownMenuItem onClick={() => navigate(`/perfil/${user?.id}`)} className="hover:bg-slate-800/50 text-slate-300 hover:text-white cursor-pointer">
+                <DropdownMenuItem key="profile" onClick={() => navigate(`/perfil/${user?.id}`)} className="hover:bg-slate-800/50 text-slate-300 hover:text-white cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   Meu Perfil
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-slate-700" />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer" data-testid="logout-btn">
+                <DropdownMenuItem key="logout" onClick={handleLogout} className="text-red-400 hover:text-red-300 hover:bg-red-500/10 cursor-pointer" data-testid="logout-btn">
                   <LogOut className="mr-2 h-4 w-4" />
                   Sair
                 </DropdownMenuItem>
