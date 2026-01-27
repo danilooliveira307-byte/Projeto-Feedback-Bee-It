@@ -90,7 +90,8 @@ const Layout = ({ children }) => {
         { path: '/feedbacks', label: 'Feedbacks', icon: MessageSquare },
         { path: '/planos-acao', label: 'Planos de Ação', icon: ClipboardList },
         { path: '/usuarios', label: 'Usuários', icon: Users },
-        { path: '/times', label: 'Times', icon: Building2 }
+        { path: '/times', label: 'Times', icon: Building2 },
+        { path: '/configuracoes/email', label: 'E-mail', icon: Mail }
       );
     }
     
