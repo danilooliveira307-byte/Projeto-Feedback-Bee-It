@@ -17,7 +17,11 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 
 ## Status do Sistema: ✅ COMPLETO E FUNCIONAL
 
-### Testes Realizados (27/01/2026)
+### Últimas Correções (27/01/2026)
+- ✅ **Bug Dropdowns**: Corrigido posicionamento dos dropdowns na página de Feedbacks (z-index, forceMount)
+- ✅ **Bug Mensagem de Erro**: Mensagem de login inválido agora aparece corretamente (interceptor 401)
+
+### Testes Realizados (27/01/2026 - iteration_5.json)
 - **Backend**: 100% APIs testadas e funcionando
   - Autenticação JWT ✅
   - CRUD Usuários ✅
@@ -28,8 +32,10 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
   - Perfil do colaborador ✅
   - Notificações ✅
 
-- **Frontend**: 98% funcionalidades testadas
+- **Frontend**: 100% funcionalidades testadas
   - Login com credenciais válidas ✅
+  - Login com credenciais inválidas (mensagem de erro) ✅
+  - Dropdowns de ação funcionando ✅
   - Navegação completa ✅
   - CRUD via UI ✅
   - Filtros funcionando ✅
