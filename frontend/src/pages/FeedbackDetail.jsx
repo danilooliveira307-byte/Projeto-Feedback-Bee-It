@@ -482,9 +482,9 @@ const FeedbackDetail = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
-                    <SelectItem value="Colaborador">Colaborador</SelectItem>
-                    <SelectItem value="Gestor">Gestor</SelectItem>
-                    <SelectItem value="Ambos">Ambos</SelectItem>
+                    <SelectItem key="colaborador" value="Colaborador">Colaborador</SelectItem>
+                    <SelectItem key="gestor" value="Gestor">Gestor</SelectItem>
+                    <SelectItem key="ambos" value="Ambos">Ambos</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
