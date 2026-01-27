@@ -331,14 +331,16 @@ const ActionPlanDetail = () => {
                       {formatDate(item.prazo_item)}
                     </span>
                   )}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteItem(item.id)}
-                    className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-500/10"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {canDeleteItems() && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteItem(item.id)}
+                      className="h-8 w-8 text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               ))
             )}
