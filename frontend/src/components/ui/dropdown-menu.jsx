@@ -42,28 +42,8 @@ const DropdownMenuSubContent = React.forwardRef(({ className, ...props }, ref) =
 ))
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName
 
-// Safe Portal wrapper to prevent removeChild errors
-const SafePortal = ({ children }) => {
-  const [canRender, setCanRender] = React.useState(false)
-  
-  React.useEffect(() => {
-    // Delay portal rendering to next frame to avoid race conditions
-    const frame = requestAnimationFrame(() => {
-      setCanRender(true)
-    })
-    return () => {
-      cancelAnimationFrame(frame)
-      setCanRender(false)
-    }
-  }, [])
-
-  if (!canRender) return null
-  
-  return <DropdownMenuPrimitive.Portal>{children}</DropdownMenuPrimitive.Portal>
-}
-
 const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
-  <SafePortal>
+  <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
       ref={ref}
       sideOffset={sideOffset}
@@ -72,7 +52,7 @@ const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...pr
         className
       )}
       {...props} />
-  </SafePortal>
+  </DropdownMenuPrimitive.Portal>
 ))
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
