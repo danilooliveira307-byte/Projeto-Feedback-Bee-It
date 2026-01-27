@@ -479,7 +479,9 @@ const FeedbackDetail = () => {
                   onValueChange={(v) => setNewPlan(prev => ({ ...prev, responsavel: v }))}
                 >
                   <SelectTrigger className="bg-slate-950 border-slate-700 text-white">
-                    <SelectValue />
+                    <span className="truncate">
+                      {newPlan.responsavel || "Selecione o responsável"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
                     <SelectItem key="colaborador" value="Colaborador">Colaborador</SelectItem>
@@ -492,7 +494,7 @@ const FeedbackDetail = () => {
           </div>
           <DialogFooter>
             <Button 
-              variant="outline" 
+              variant="outline"
               onClick={() => setPlanDialogOpen(false)}
               className="bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700 hover:text-white"
             >
