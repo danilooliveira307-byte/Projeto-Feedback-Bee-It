@@ -18,29 +18,13 @@ Sistema de gestão de feedbacks corporativo para a empresa Bee It, centralizando
 ## Status do Sistema: ✅ COMPLETO E FUNCIONAL
 
 ### Últimas Correções (27/01/2026)
-- ✅ **Bug Dropdowns**: Corrigido posicionamento dos dropdowns na página de Feedbacks (z-index, forceMount)
-- ✅ **Bug Mensagem de Erro**: Mensagem de login inválido agora aparece corretamente (interceptor 401)
-
-### Testes Realizados (27/01/2026 - iteration_5.json)
-- **Backend**: 100% APIs testadas e funcionando
-  - Autenticação JWT ✅
-  - CRUD Usuários ✅
-  - CRUD Times ✅
-  - CRUD Feedbacks ✅
-  - CRUD Planos de Ação ✅
-  - Dashboards por papel ✅
-  - Perfil do colaborador ✅
-  - Notificações ✅
-
-- **Frontend**: 100% funcionalidades testadas
-  - Login com credenciais válidas ✅
-  - Login com credenciais inválidas (mensagem de erro) ✅
-  - Dropdowns de ação funcionando ✅
-  - Navegação completa ✅
-  - CRUD via UI ✅
-  - Filtros funcionando ✅
-  - Visual dark mode ✅
-  - Logo oficial Bee It ✅
+- ✅ **Bug Dropdowns**: Corrigido posicionamento dos dropdowns na página de Feedbacks
+- ✅ **Bug Mensagem de Erro Login**: Mensagem de login inválido agora aparece corretamente
+- ✅ **Bug CRÍTICO removeChild**: Resolvido erro persistente de runtime do React 18 + Radix UI
+  - Causa: Bug conhecido do Radix Primitives (issue #3795) com Portals no React 18
+  - Solução: Removido StrictMode, eliminado React Fragments dentro de componentes Radix, adicionado keys estáveis
+- ✅ **Sistema de Toast**: Migrado para Sonner (biblioteca recomendada pelo Shadcn/UI)
+- ✅ **Downgrade Radix UI**: Versões estáveis compatíveis com React 18
 
 ### Features Implementadas
 
