@@ -7,7 +7,7 @@ import requests
 import os
 from datetime import datetime, timedelta
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://beeitfeedback.preview.emergentagent.com').rstrip('/')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://feedback-bee.preview.emergentagent.com').rstrip('/')
 
 # Test credentials (from seed data)
 ADMIN_EMAIL = "danilo.oliveira@beeitpartner.com.br"

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from typing import Dict, Any, Optional
 
 class BeeItFeedbackTester:
-    def __init__(self, base_url="https://beeitfeedback.preview.emergentagent.com"):
+    def __init__(self, base_url="https://feedback-bee.preview.emergentagent.com"):
         self.base_url = base_url
         self.tokens = {}
         self.users = {}
