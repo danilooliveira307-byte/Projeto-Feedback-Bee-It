@@ -41,6 +41,11 @@ api_router = APIRouter(prefix="/api")
 
 security = HTTPBearer()
 
+# Root health check for deployment (without /api prefix)
+@app.get("/health")
+async def root_health_check():
+    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+
 # ==================== ENUMS & CONSTANTS ====================
 ROLES = ["ADMIN", "GESTOR", "COLABORADOR"]
 FEEDBACK_TYPES = ["1:1", "Avaliação de Desempenho", "Coaching", "Correção de Rota", "Elogio"]
