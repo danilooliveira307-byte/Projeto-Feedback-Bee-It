@@ -14,7 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [, forceUpdate] = useReducer(x => x + 1, 0);
   const { login, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -37,14 +36,11 @@ const Login = () => {
     } catch (err) {
       console.error('Login error:', err);
       const message = err.response?.data?.detail || 'Erro ao fazer login. Verifique suas credenciais.';
-      console.log('Setting error message:', message);
-      setLoading(false);
       setError(message);
-      forceUpdate(); // Force re-render
       toast({ title: 'Erro', description: message, variant: 'destructive' });
-      return;
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
