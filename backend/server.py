@@ -478,7 +478,7 @@ async def delete_team(team_id: str, admin: dict = Depends(require_admin)):
 # ==================== FEEDBACK ENDPOINTS ====================
 
 @api_router.post("/feedbacks", response_model=FeedbackResponse)
-async def create_feedback(feedback_data: FeedbackCreate, user: dict = Depends(require_gestor_or_admin)):
+async def create_feedback(feedback_data: FeedbackCreate, background_tasks: BackgroundTasks, user: dict = Depends(require_gestor_or_admin)):
     # Get collaborator info
     colaborador = await db.usuarios.find_one({"id": feedback_data.colaborador_id}, {"_id": 0})
     if not colaborador:
@@ -521,6 +521,18 @@ async def create_feedback(feedback_data: FeedbackCreate, user: dict = Depends(re
         "Novo Feedback Recebido",
         f"Você recebeu um novo feedback do tipo {feedback_data.tipo_feedback}"
     )
+    
+    # Send email notification to collaborator (in background)
+    if colaborador.get("email"):
+        data_formatada = datetime.now(timezone.utc).strftime("%d/%m/%Y")
+        background_tasks.add_task(
+            send_new_feedback_notification,
+            colaborador.get("email"),
+            colaborador.get("nome", "Colaborador"),
+            user.get("nome", "Gestor"),
+            feedback_data.tipo_feedback,
+            data_formatada
+        )
     
     feedback["colaborador_nome"] = colaborador.get("nome")
     feedback["gestor_nome"] = user.get("nome")
