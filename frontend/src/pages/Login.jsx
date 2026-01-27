@@ -37,6 +37,7 @@ const Login = () => {
     } catch (err) {
       console.error('Login error:', err);
       const message = err.response?.data?.detail || 'Erro ao fazer login. Verifique suas credenciais.';
+      console.log('Setting error message:', message);
       setLoading(false);
       setError(message);
       forceUpdate(); // Force re-render
