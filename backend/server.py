@@ -1433,6 +1433,135 @@ async def seed_data():
         }
     }
 
+# ==================== EMAIL NOTIFICATIONS ====================
+
+@api_router.post("/notifications/check-overdue")
+async def check_overdue_and_notify(background_tasks: BackgroundTasks, user: dict = Depends(require_admin)):
+    """
+    Check for overdue feedbacks and action plans and send email notifications.
+    This endpoint should be called by a scheduled job (cron).
+    """
+    notifications_sent = {
+        "overdue_feedbacks": 0,
+        "approaching_deadlines": 0
+    }
+    
+    now = datetime.now(timezone.utc)
+    
+    # 1. Check for overdue feedbacks (where next feedback date has passed)
+    feedbacks_cursor = db.feedbacks.find({
+        "data_proximo_feedback": {"$lt": now.isoformat()},
+        "status_feedback": {"$ne": "Concluído"}
+    }, {"_id": 0})
+    
+    async for feedback in feedbacks_cursor:
+        gestor = await db.usuarios.find_one({"id": feedback.get("gestor_id")}, {"_id": 0})
+        colaborador = await db.usuarios.find_one({"id": feedback.get("colaborador_id")}, {"_id": 0})
+        
+        if gestor and gestor.get("email") and colaborador:
+            try:
+                data_prevista = datetime.fromisoformat(feedback.get("data_proximo_feedback", now.isoformat()).replace("Z", "+00:00"))
+                dias_atraso = (now - data_prevista).days
+                
+                if dias_atraso > 0:
+                    background_tasks.add_task(
+                        send_overdue_feedback_notification,
+                        gestor.get("email"),
+                        gestor.get("nome", "Gestor"),
+                        colaborador.get("nome", "Colaborador"),
+                        data_prevista.strftime("%d/%m/%Y"),
+                        dias_atraso
+                    )
+                    notifications_sent["overdue_feedbacks"] += 1
+            except Exception as e:
+                logging.error(f"Error processing overdue feedback: {e}")
+    
+    # 2. Check for action plans with approaching deadlines (7 days or less)
+    deadline_threshold = (now + timedelta(days=7)).isoformat()
+    
+    plans_cursor = db.planos_acao.find({
+        "prazo_final": {"$lte": deadline_threshold},
+        "status": {"$nin": ["Concluído"]}
+    }, {"_id": 0})
+    
+    async for plan in plans_cursor:
+        # Get the collaborator from the linked feedback
+        feedback = await db.feedbacks.find_one({"id": plan.get("feedback_id")}, {"_id": 0})
+        if feedback:
+            colaborador = await db.usuarios.find_one({"id": feedback.get("colaborador_id")}, {"_id": 0})
+            gestor = await db.usuarios.find_one({"id": feedback.get("gestor_id")}, {"_id": 0})
+            
+            # Determine who to notify based on responsibility
+            responsavel = plan.get("responsavel", "Ambos")
+            emails_to_notify = []
+            
+            if responsavel in ["Colaborador", "Ambos"] and colaborador and colaborador.get("email"):
+                emails_to_notify.append((colaborador.get("email"), colaborador.get("nome", "Colaborador")))
+            if responsavel in ["Gestor", "Ambos"] and gestor and gestor.get("email"):
+                emails_to_notify.append((gestor.get("email"), gestor.get("nome", "Gestor")))
+            
+            try:
+                prazo_final = datetime.fromisoformat(plan.get("prazo_final", now.isoformat()).replace("Z", "+00:00"))
+                dias_restantes = (prazo_final - now).days
+                
+                for email, nome in emails_to_notify:
+                    background_tasks.add_task(
+                        send_action_plan_deadline_notification,
+                        email,
+                        nome,
+                        plan.get("objetivo", "Plano de Ação"),
+                        prazo_final.strftime("%d/%m/%Y"),
+                        dias_restantes
+                    )
+                    notifications_sent["approaching_deadlines"] += 1
+            except Exception as e:
+                logging.error(f"Error processing action plan deadline: {e}")
+    
+    return {
+        "message": "Notification check completed",
+        "notifications_sent": notifications_sent
+    }
+
+
+@api_router.post("/notifications/send-test-email")
+async def send_test_email(email: str, user: dict = Depends(require_admin)):
+    """
+    Send a test email to verify SendGrid configuration
+    """
+    from email_service import send_email, get_email_header, get_email_footer
+    
+    html_content = f"""
+    <html>
+    <body style="margin: 0; padding: 20px; background-color: #020617; font-family: Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #0F172A; border-radius: 8px; overflow: hidden;">
+            {get_email_header()}
+            
+            <div style="padding: 30px; color: #E2E8F0;">
+                <h2 style="color: #10B981; margin-top: 0;">✅ E-mail de Teste</h2>
+                
+                <p>Este é um e-mail de teste do sistema Bee It Feedback.</p>
+                
+                <p>Se você está recebendo este e-mail, a configuração do SendGrid está funcionando corretamente!</p>
+                
+                <div style="background-color: #1E293B; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #10B981;">
+                    <p style="margin: 5px 0;"><strong style="color: #F59E0B;">Data/Hora:</strong> {datetime.now(timezone.utc).strftime("%d/%m/%Y %H:%M:%S")} UTC</p>
+                    <p style="margin: 5px 0;"><strong style="color: #F59E0B;">Enviado por:</strong> {user.get('nome', 'Admin')}</p>
+                </div>
+            </div>
+            
+            {get_email_footer()}
+        </div>
+    </body>
+    </html>
+    """
+    
+    success = send_email(email, "🧪 Teste de E-mail - Bee It Feedback", html_content)
+    
+    if success:
+        return {"message": f"E-mail de teste enviado para {email}"}
+    else:
+        raise HTTPException(status_code=500, detail="Falha ao enviar e-mail. Verifique a configuração do SendGrid.")
+
 # ==================== HEALTH CHECK ====================
 
 @api_router.get("/health")
