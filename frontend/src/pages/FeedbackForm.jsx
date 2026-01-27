@@ -511,7 +511,9 @@ const FeedbackForm = () => {
                       onValueChange={(v) => setPlanData(prev => ({ ...prev, responsavel: v }))}
                     >
                       <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
-                        <SelectValue />
+                        <span className="truncate">
+                          {planData.responsavel || "Selecione"}
+                        </span>
                       </SelectTrigger>
                       <SelectContent className="bg-slate-900 border-slate-700">
                         <SelectItem value="Colaborador">Colaborador</SelectItem>
@@ -527,7 +529,7 @@ const FeedbackForm = () => {
         )}
 
         <div className="flex justify-end gap-3">
-          <Button 
+          <Button
             type="button" 
             variant="outline" 
             onClick={() => navigate(-1)}
