@@ -230,7 +230,11 @@ const Feedbacks = () => {
                   onValueChange={(v) => handleFilterChange('colaborador_id', v)}
                 >
                   <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-colaborador">
-                    <SelectValue placeholder="Todos" />
+                    <span className="truncate">
+                      {filters.colaborador_id && filters.colaborador_id !== "all" 
+                        ? users.find(u => u.id === filters.colaborador_id)?.nome || "Todos"
+                        : "Todos"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
                     <SelectItem value="all">Todos</SelectItem>
@@ -249,7 +253,11 @@ const Feedbacks = () => {
                 onValueChange={(v) => handleFilterChange('time_id', v)}
               >
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-time">
-                  <SelectValue placeholder="Todos" />
+                  <span className="truncate">
+                    {filters.time_id && filters.time_id !== "all" 
+                      ? teams.find(t => t.id === filters.time_id)?.nome || "Todos"
+                      : "Todos"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   <SelectItem value="all">Todos</SelectItem>
@@ -267,7 +275,9 @@ const Feedbacks = () => {
                 onValueChange={(v) => handleFilterChange('tipo_feedback', v)}
               >
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-tipo">
-                  <SelectValue placeholder="Todos" />
+                  <span className="truncate">
+                    {filters.tipo_feedback && filters.tipo_feedback !== "all" ? filters.tipo_feedback : "Todos"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   <SelectItem value="all">Todos</SelectItem>
@@ -285,7 +295,9 @@ const Feedbacks = () => {
                 onValueChange={(v) => handleFilterChange('status_feedback', v)}
               >
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white" data-testid="filter-status">
-                  <SelectValue placeholder="Todos" />
+                  <span className="truncate">
+                    {filters.status_feedback && filters.status_feedback !== "all" ? filters.status_feedback : "Todos"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   <SelectItem value="all">Todos</SelectItem>
