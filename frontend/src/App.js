@@ -15,6 +15,7 @@ import CollaboratorProfile from './pages/CollaboratorProfile';
 import Users from './pages/Users';
 import Teams from './pages/Teams';
 import Collaborators from './pages/Collaborators';
+import EmailSettings from './pages/EmailSettings';
 
 // Components
 import Layout from './components/Layout';
