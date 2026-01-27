@@ -46,8 +46,27 @@ const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) =
 ))
 SelectScrollDownButton.displayName = SelectPrimitive.ScrollDownButton.displayName
 
+// Safe Portal wrapper to prevent removeChild errors
+const SafeSelectPortal = ({ children }) => {
+  const [canRender, setCanRender] = React.useState(false)
+  
+  React.useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setCanRender(true)
+    })
+    return () => {
+      cancelAnimationFrame(frame)
+      setCanRender(false)
+    }
+  }, [])
+
+  if (!canRender) return null
+  
+  return <SelectPrimitive.Portal>{children}</SelectPrimitive.Portal>
+}
+
 const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => (
-  <SelectPrimitive.Portal>
+  <SafeSelectPortal>
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
@@ -65,7 +84,7 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
       </SelectPrimitive.Viewport>
       <SelectScrollDownButton />
     </SelectPrimitive.Content>
-  </SelectPrimitive.Portal>
+  </SafeSelectPortal>
 ))
 SelectContent.displayName = SelectPrimitive.Content.displayName
 
