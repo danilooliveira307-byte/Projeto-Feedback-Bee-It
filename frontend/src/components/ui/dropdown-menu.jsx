@@ -45,7 +45,7 @@ DropdownMenuSubContent.displayName =
   DropdownMenuPrimitive.SubContent.displayName
 
 const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
+  <DropdownMenuPrimitive.Portal forceMount>
     <DropdownMenuPrimitive.Content
       ref={ref}
       sideOffset={sideOffset}
