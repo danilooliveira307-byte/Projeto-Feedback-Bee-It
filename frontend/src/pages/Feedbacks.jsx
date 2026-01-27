@@ -318,7 +318,7 @@ const Feedbacks = () => {
       )}
 
       {/* Feedbacks Table */}
-      <div className="glass-card rounded-xl overflow-hidden">
+      <div className="glass-card rounded-xl">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="flex flex-col items-center gap-4">
