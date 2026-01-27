@@ -8,7 +8,11 @@ const Select = SelectPrimitive.Root
 
 const SelectGroup = SelectPrimitive.Group
 
-const SelectValue = SelectPrimitive.Value
+// Custom SelectValue that doesn't have the concatenation bug
+const SelectValue = React.forwardRef(({ className, placeholder, ...props }, ref) => (
+  <SelectPrimitive.Value ref={ref} placeholder={placeholder} {...props} />
+))
+SelectValue.displayName = "SelectValue"
 
 const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
@@ -20,7 +24,7 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
     {...props}>
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ChevronDown className="h-4 w-4 opacity-50 flex-shrink-0" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
