@@ -340,7 +340,7 @@ const Feedbacks = () => {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-visible">
             <Table>
               <TableHeader>
                 <TableRow className="border-slate-700/50 hover:bg-transparent">
