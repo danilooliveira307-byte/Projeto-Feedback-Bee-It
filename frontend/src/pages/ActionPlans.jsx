@@ -235,6 +235,7 @@ const ActionPlans = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
                       <DropdownMenuItem 
+                        key={`view-plan-${plan.id}`}
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(`/planos-acao/${plan.id}`);
@@ -246,6 +247,7 @@ const ActionPlans = () => {
                       </DropdownMenuItem>
                       {isGestorOrAdmin() && (
                         <DropdownMenuItem
+                          key={`delete-plan-${plan.id}`}
                           onClick={(e) => {
                             e.stopPropagation();
                             setPlanToDelete(plan.id);
