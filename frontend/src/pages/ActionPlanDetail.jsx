@@ -53,6 +53,7 @@ const ActionPlanDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const [plan, setPlan] = useState(null);
   const [items, setItems] = useState([]);
@@ -65,6 +66,11 @@ const ActionPlanDetail = () => {
     progresso: 'Regular',
     comentario: ''
   });
+
+  // Permission check - only ADMIN and GESTOR can delete items
+  const canDeleteItems = () => {
+    return user?.papel === 'ADMIN' || user?.papel === 'GESTOR';
+  };
 
   const fetchData = async () => {
     setLoading(true);
