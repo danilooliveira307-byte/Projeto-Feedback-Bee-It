@@ -23,7 +23,8 @@ import {
   User,
   Hexagon,
   ChevronLeft,
-  Search
+  Search,
+  Mail
 } from 'lucide-react';
 
 const LOGO_URL = 'https://customer-assets.emergentagent.com/job_beeitfeedback/artifacts/g76gq8ss_Usar_em_Fundo_Azul.png';
