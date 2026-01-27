@@ -9,12 +9,12 @@ from datetime import datetime, timedelta
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://beeitfeedback.preview.emergentagent.com').rstrip('/')
 
-# Test credentials
-ADMIN_EMAIL = "admin@beeit.com.br"
+# Test credentials (from seed data)
+ADMIN_EMAIL = "danilo.oliveira@beeitpartner.com.br"
 ADMIN_PASSWORD = "admin123"
-GESTOR_EMAIL = "gestor@beeit.com.br"
+GESTOR_EMAIL = "milcio.gutierrez@beeitpartner.com.br"
 GESTOR_PASSWORD = "gestor123"
-COLABORADOR_EMAIL = "colaborador@beeit.com.br"
+COLABORADOR_EMAIL = "cristopher.pinho@beeitpartner.com.br"
 COLABORADOR_PASSWORD = "colab123"
 
 
