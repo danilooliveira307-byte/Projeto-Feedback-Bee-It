@@ -149,7 +149,9 @@ const ActionPlans = () => {
                 onValueChange={(v) => setFilters(prev => ({ ...prev, status: v }))}
               >
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
-                  <SelectValue placeholder="Todos" />
+                  <span className="truncate">
+                    {filters.status && filters.status !== "all" ? filters.status : "Todos"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   <SelectItem value="all">Todos</SelectItem>
@@ -167,7 +169,9 @@ const ActionPlans = () => {
                 onValueChange={(v) => setFilters(prev => ({ ...prev, responsavel: v }))}
               >
                 <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
-                  <SelectValue placeholder="Todos" />
+                  <span className="truncate">
+                    {filters.responsavel && filters.responsavel !== "all" ? filters.responsavel : "Todos"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   <SelectItem value="all">Todos</SelectItem>
