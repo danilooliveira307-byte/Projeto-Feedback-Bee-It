@@ -376,7 +376,9 @@ const Users = () => {
                 onValueChange={(v) => setFormData(prev => ({ ...prev, papel: v }))}
               >
                 <SelectTrigger className="bg-slate-950 border-slate-700 text-white" data-testid="user-role-select">
-                  <SelectValue />
+                  <span className="truncate">
+                    {formData.papel ? ROLES.find(r => r.value === formData.papel)?.label : "Selecione o papel"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   {ROLES.map(r => (
@@ -392,7 +394,11 @@ const Users = () => {
                 onValueChange={(v) => setFormData(prev => ({ ...prev, time_id: v }))}
               >
                 <SelectTrigger className="bg-slate-950 border-slate-700 text-white">
-                  <SelectValue placeholder="Selecione um time" />
+                  <span className="truncate">
+                    {formData.time_id && formData.time_id !== "none" 
+                      ? teams.find(t => t.id === formData.time_id)?.nome || "Selecione um time"
+                      : "Selecione um time"}
+                  </span>
                 </SelectTrigger>
                 <SelectContent className="bg-slate-900 border-slate-700">
                   <SelectItem value="none">Nenhum</SelectItem>
@@ -410,7 +416,11 @@ const Users = () => {
                   onValueChange={(v) => setFormData(prev => ({ ...prev, gestor_direto_id: v }))}
                 >
                   <SelectTrigger className="bg-slate-950 border-slate-700 text-white">
-                    <SelectValue placeholder="Selecione o gestor" />
+                    <span className="truncate">
+                      {formData.gestor_direto_id && formData.gestor_direto_id !== "none"
+                        ? gestores.find(g => g.id === formData.gestor_direto_id)?.nome || "Selecione o gestor"
+                        : "Selecione o gestor"}
+                    </span>
                   </SelectTrigger>
                   <SelectContent className="bg-slate-900 border-slate-700">
                     <SelectItem value="none">Nenhum</SelectItem>
