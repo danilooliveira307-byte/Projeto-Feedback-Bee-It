@@ -974,16 +974,16 @@ async def get_gestor_dashboard(user: dict = Depends(require_gestor_or_admin)):
         "data_proximo_feedback": {"$lte": thirty_days, "$gte": now.isoformat()}
     })
     
-    # Colaboradores sem feedback recente (90 dias)
+    # Colaboradores sem feedback recente (90 dias) - Optimized batch query
     ninety_days_ago = (now - timedelta(days=90)).isoformat()
-    colaboradores_sem_feedback = 0
-    for member_id in member_ids:
-        recent_feedback = await db.feedbacks.find_one({
-            "colaborador_id": member_id,
+    members_with_recent_feedback = await db.feedbacks.distinct(
+        "colaborador_id",
+        {
+            "colaborador_id": {"$in": member_ids},
             "data_feedback": {"$gte": ninety_days_ago}
-        })
-        if not recent_feedback:
-            colaboradores_sem_feedback += 1
+        }
+    )
+    colaboradores_sem_feedback = len(member_ids) - len(members_with_recent_feedback)
     
     # Planos de ação atrasados
     planos_atrasados = await db.planos_acao.count_documents({
