@@ -9,27 +9,8 @@ const PopoverTrigger = PopoverPrimitive.Trigger
 
 const PopoverAnchor = PopoverPrimitive.Anchor
 
-// Safe Portal wrapper to prevent removeChild errors
-const SafePopoverPortal = ({ children }) => {
-  const [canRender, setCanRender] = React.useState(false)
-  
-  React.useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      setCanRender(true)
-    })
-    return () => {
-      cancelAnimationFrame(frame)
-      setCanRender(false)
-    }
-  }, [])
-
-  if (!canRender) return null
-  
-  return <PopoverPrimitive.Portal>{children}</PopoverPrimitive.Portal>
-}
-
 const PopoverContent = React.forwardRef(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
-  <SafePopoverPortal>
+  <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
       ref={ref}
       align={align}
@@ -39,7 +20,7 @@ const PopoverContent = React.forwardRef(({ className, align = "center", sideOffs
         className
       )}
       {...props} />
-  </SafePopoverPortal>
+  </PopoverPrimitive.Portal>
 ))
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
