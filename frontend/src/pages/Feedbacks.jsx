@@ -380,6 +380,7 @@ const Feedbacks = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700">
                           <DropdownMenuItem 
+                            key={`view-${feedback.id}`}
                             onClick={() => navigate(`/feedbacks/${feedback.id}`)}
                             className="text-slate-300 hover:text-white hover:bg-slate-700"
                           >
@@ -388,6 +389,7 @@ const Feedbacks = () => {
                           </DropdownMenuItem>
                           {isColaborador() && !feedback.ciencia_colaborador && (
                             <DropdownMenuItem 
+                              key={`ack-${feedback.id}`}
                               onClick={() => handleAcknowledge(feedback.id)}
                               className="text-slate-300 hover:text-white hover:bg-slate-700"
                             >
@@ -396,27 +398,27 @@ const Feedbacks = () => {
                             </DropdownMenuItem>
                           )}
                           {isGestorOrAdmin() && (
-                            <>
-                              <DropdownMenuItem 
-                                onClick={() => navigate(`/feedbacks/${feedback.id}/editar`)}
-                                className="text-slate-300 hover:text-white hover:bg-slate-700"
-                              >
-                                <Edit className="h-4 w-4 mr-2" />
-                                Editar
-                              </DropdownMenuItem>
-                              {isAdmin() && (
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setFeedbackToDelete(feedback.id);
-                                    setDeleteDialogOpen(true);
-                                  }}
-                                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                                >
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Excluir
-                                </DropdownMenuItem>
-                              )}
-                            </>
+                            <DropdownMenuItem 
+                              key={`edit-${feedback.id}`}
+                              onClick={() => navigate(`/feedbacks/${feedback.id}/editar`)}
+                              className="text-slate-300 hover:text-white hover:bg-slate-700"
+                            >
+                              <Edit className="h-4 w-4 mr-2" />
+                              Editar
+                            </DropdownMenuItem>
+                          )}
+                          {isAdmin() && (
+                            <DropdownMenuItem
+                              key={`delete-${feedback.id}`}
+                              onClick={() => {
+                                setFeedbackToDelete(feedback.id);
+                                setDeleteDialogOpen(true);
+                              }}
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Excluir
+                            </DropdownMenuItem>
                           )}
                         </DropdownMenuContent>
                       </DropdownMenu>
