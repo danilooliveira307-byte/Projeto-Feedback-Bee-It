@@ -37,12 +37,13 @@ const Login = () => {
     } catch (err) {
       console.error('Login error:', err);
       const message = err.response?.data?.detail || 'Erro ao fazer login. Verifique suas credenciais.';
-      console.log('Setting error message:', message);
-      // Use setTimeout to ensure state update is processed after loading state change
-      setLoading(false);
-      setError(message);
+      // Use flushSync to force immediate re-render with error state
+      flushSync(() => {
+        setLoading(false);
+        setError(message);
+      });
       toast({ title: 'Erro', description: message, variant: 'destructive' });
-      return; // Exit early to avoid finally block resetting loading
+      return;
     }
     setLoading(false);
   };
